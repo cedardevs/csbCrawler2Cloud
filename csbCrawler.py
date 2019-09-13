@@ -8,12 +8,10 @@ def extract_item(file_item):
     tar = tarfile.open(file_item, "r:gz")
     for tarinfo in tar:
         print (tarinfo.name, "is", tarinfo.size, "bytes in size and is")
+
         if tarinfo.isreg():
             print("a regular file.")
-        elif tarinfo.isdir():
-            print("a directory.")
-        else:
-            print("something else.")
+            tar.extract(tarinfo, r"/tmp", True)
     tar.close()
 
 
