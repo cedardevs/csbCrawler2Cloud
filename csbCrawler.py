@@ -31,5 +31,5 @@ def recurse_dir(root_dir):
 if __name__ == '__main__':
     # Get full size of home directory
     ## Switch to config file for data directory
-    recurse_dir(r"/Users/dneufeld/data")
+    recurse_dir(r"/Users/david.neufeld/data")
 
