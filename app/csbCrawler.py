@@ -1,6 +1,11 @@
-# recurse_dir.py
+# Extract CSB files
+
+import json
 import os
 import tarfile
+
+def parse_metadata(file_item):
+    return []
 
 # Extract item
 def extract_item(file_item):
