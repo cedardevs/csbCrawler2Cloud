@@ -1,0 +1,19 @@
+{
+	"platform":
+	{
+		"uniqueID":"ROSEP-ffa635f8-7aa4-49d8-bc04-581457fb9e46",
+		"type": "Ship",
+		"name": "Joe Pyne",
+		"length": 25.908000,
+		"lengthUnitOfMeasure": "meters",
+		"IDType": "None",
+		"IDNumber": ""
+	},
+	"providerContactPoint":
+	{
+		"orgName": "Rose Point",
+		"email": "support@rosepoint.com",
+		"logger": "Rose Point ECS",
+		"loggerVersion": "4.0.19148.2035"
+	}
+}
