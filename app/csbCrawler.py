@@ -6,9 +6,16 @@ import os
 import tarfile
 
 def parse_metadata(file):
-
-    data = json.load(file)
-    return data
+    #Date is represented in filename YYYYMMDD
+    file_name = os.path.basename(file.name)
+    metadata = json.load(file)
+    metadata["uuid"] = file_name[9:41]
+    metadata["date"] = file_name[:8]
+    csv_file_name = file_name[:-4] + "csv"
+    print(metadata)
+    print(csv_file_name)
+    #Write out combined metadata to CSV
+    return metadata
 
 # Add metadata
 def add_metadata(file, metadata):
