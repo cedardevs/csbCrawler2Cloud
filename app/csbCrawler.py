@@ -5,16 +5,22 @@ import json
 import os
 import tarfile
 
+def write_metadata_to_csv(metadata, csv_file_name):
+    csv_file = open("output/" + csv_file_name, "w")
+    csv_file.write("UUID,NAME,DATE,PROVIDER\n")
+    csv_file.write(metadata["uuid"] + "," + metadata["platform"]["name"] + "," + metadata["date"] + "," + metadata["providerContactPoint"]["orgName"])
+
 def parse_metadata(file):
     #Date is represented in filename YYYYMMDD
     file_name = os.path.basename(file.name)
     metadata = json.load(file)
     metadata["uuid"] = file_name[9:41]
     metadata["date"] = file_name[:8]
-    csv_file_name = file_name[:-4] + "csv"
+    csv_file_name = file_name[:-6] + "csv"
     print(metadata)
-    print(csv_file_name)
+    print("csv_file_name=" + csv_file_name)
     #Write out combined metadata to CSV
+    write_metadata_to_csv(metadata, csv_file_name)
     return metadata
 
 # Add metadata
