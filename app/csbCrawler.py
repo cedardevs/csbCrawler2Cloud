@@ -10,21 +10,32 @@ def write_metadata_to_csv(metadata, csv_file_name):
     csv_file.write("UUID,NAME,DATE,PROVIDER\n")
     csv_file.write(metadata["uuid"] + "," + metadata["platform"]["name"] + "," + metadata["date"] + "," + metadata["providerContactPoint"]["orgName"])
 
-def add_uuid_to_xyz(xyz_file):
-    file_name = os.path.basename(xyz_file.name)
+def add_uuid_to_xyz(tar, tar_info):
+    xyz_file = tar.extractfile(tar_info)
+    file_name = os.path.basename(tar_info.name)
     uuid = file_name[9:41]
     print("Adding " + uuid + " to xyz")
+    new_file_name = r"output/uuid_" + file_name
+    new_xyz_file = open(new_file_name,"w+")
+    print(new_file_name)
 
     #Skip header
     xyz_file.readline()
     cnt = 1
+
     #Loop through xyz_file and write info back out with uuid included.
     for line in xyz_file:
+        #TODO add more validation checks
         line = uuid + "," + (xyz_file.readline()).decode("UTF-8").strip()
-        print("Line {}: {}".format(cnt, line))
+        tokens = line.split(",")
+
+        if len(tokens) == 5:
+            print("Line {}: {}".format(cnt, line))
+            new_xyz_file.write(line + "\n")
         cnt += 1
-        if cnt == 100:
-            break
+
+    xyz_file.close()
+    new_xyz_file.close()
 
 def parse_metadata(metadata_file):
     #Date is represented in filename YYYYMMDD
@@ -32,7 +43,7 @@ def parse_metadata(metadata_file):
     metadata = json.load(metadata_file)
     metadata["uuid"] = file_name[9:41]
     metadata["date"] = file_name[:8]
-    csv_file_name = file_name[:-6] + "csv"
+    csv_file_name = file_name[:-7] + "_metadata.csv"
     print(metadata)
     print("csv_file_name=" + csv_file_name)
     #Write out combined metadata to CSV
@@ -51,14 +62,13 @@ def extract_metadata(tar):
 
     return metadata
 
-def process_tar(tar, metadata):
+def process_xyz_files(tar, metadata):
     for tar_info in tar:
 
         if tar_info.isreg() and (tar_info.name[-4:] == ".xyz"):
             if tar_info.name[-4:] == ".xyz":
                 print("extracting... " + tar_info.name)
-                xyz_file = tar.extractfile(tar_info)
-                add_uuid_to_xyz(xyz_file)
+                add_uuid_to_xyz(tar, tar_info)
 
 # Print every file with its size recursing through dirs
 def recurse_dir(root_dir):
@@ -74,7 +84,7 @@ def recurse_dir(root_dir):
                 print("%s - %s bytes" % (item_full_path, os.stat(item_full_path).st_size))
                 tar = tarfile.open(item_full_path, "r:gz")
                 metadata = extract_metadata(tar)
-                process_tar(tar, metadata)
+                process_xyz_files(tar, metadata)
                 tar.close
 
 if __name__ == '__main__':
