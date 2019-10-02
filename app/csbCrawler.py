@@ -14,13 +14,17 @@ def add_uuid_to_xyz(xyz_file):
     file_name = os.path.basename(xyz_file.name)
     uuid = file_name[9:41]
     print("Adding " + uuid + " to xyz")
-    #Loop through xyz_file and write info back out with uuid included.
-    line = uuid + "," + (xyz_file.readline()).decode("UTF-8")
+
+    #Skip header
+    xyz_file.readline()
     cnt = 1
-    while line:
-        print("Line {}: {}".format(cnt, line.strip()))
-        line = uuid + "," + (xyz_file.readline()).decode("UTF-8")
+    #Loop through xyz_file and write info back out with uuid included.
+    for line in xyz_file:
+        line = uuid + "," + (xyz_file.readline()).decode("UTF-8").strip()
+        print("Line {}: {}".format(cnt, line))
         cnt += 1
+        if cnt == 100:
+            break
 
 def parse_metadata(metadata_file):
     #Date is represented in filename YYYYMMDD
