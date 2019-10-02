@@ -10,10 +10,22 @@ def write_metadata_to_csv(metadata, csv_file_name):
     csv_file.write("UUID,NAME,DATE,PROVIDER\n")
     csv_file.write(metadata["uuid"] + "," + metadata["platform"]["name"] + "," + metadata["date"] + "," + metadata["providerContactPoint"]["orgName"])
 
-def parse_metadata(file):
+def add_uuid_to_xyz(xyz_file):
+    file_name = os.path.basename(xyz_file.name)
+    uuid = file_name[9:41]
+    print("Adding " + uuid + " to xyz")
+    #Loop through xyz_file and write info back out with uuid included.
+    line = uuid + "," + (xyz_file.readline()).decode("UTF-8")
+    cnt = 1
+    while line:
+        print("Line {}: {}".format(cnt, line.strip()))
+        line = uuid + "," + (xyz_file.readline()).decode("UTF-8")
+        cnt += 1
+
+def parse_metadata(metadata_file):
     #Date is represented in filename YYYYMMDD
-    file_name = os.path.basename(file.name)
-    metadata = json.load(file)
+    file_name = os.path.basename(metadata_file.name)
+    metadata = json.load(metadata_file)
     metadata["uuid"] = file_name[9:41]
     metadata["date"] = file_name[:8]
     csv_file_name = file_name[:-6] + "csv"
@@ -23,14 +35,9 @@ def parse_metadata(file):
     write_metadata_to_csv(metadata, csv_file_name)
     return metadata
 
-# Add metadata
-def add_metadata(file, metadata):
-
-    print(file.readline())
 
 # Extract file
 def extract_metadata(tar):
-
     for tar_info in tar:
 
         if tar_info.isreg() and tar_info.name[-13:] == "metadata.json":
@@ -47,7 +54,7 @@ def process_tar(tar, metadata):
             if tar_info.name[-4:] == ".xyz":
                 print("extracting... " + tar_info.name)
                 xyz_file = tar.extractfile(tar_info)
-                add_metadata(xyz_file, metadata)
+                add_uuid_to_xyz(xyz_file)
 
 # Print every file with its size recursing through dirs
 def recurse_dir(root_dir):
