@@ -14,10 +14,11 @@ def add_uuid_to_xyz(tar, tar_info):
     xyz_file = tar.extractfile(tar_info)
     file_name = os.path.basename(tar_info.name)
     uuid = file_name[9:41]
+
     print("Adding " + uuid + " to xyz")
     new_file_name = r"output/uuid_" + file_name
     new_xyz_file = open(new_file_name,"w+")
-    print(new_file_name)
+    new_xyz_file.write("UUID,LAT,LON,DEPTH,TIME\n")
 
     #Skip header
     xyz_file.readline()
@@ -25,7 +26,7 @@ def add_uuid_to_xyz(tar, tar_info):
 
     #Loop through xyz_file and write info back out with uuid included.
     for line in xyz_file:
-        #TODO add more validation checks
+        #TODO add more validation checks?
         line = uuid + "," + (xyz_file.readline()).decode("UTF-8").strip()
         tokens = line.split(",")
 
