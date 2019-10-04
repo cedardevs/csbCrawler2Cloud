@@ -1,12 +1,16 @@
 # Extract CSB files
 
-import io
 import json
 import os
 import tarfile
+import yaml
+
+project_dir = ""
+output_dir = ""
+data_dir = ""
 
 def write_metadata_to_csv(metadata, csv_file_name):
-    csv_file = open("output/metadata/" + csv_file_name, "w")
+    csv_file = open(output_dir + "metadata/" + csv_file_name, "w")
     csv_file.write("UUID,NAME,DATE,PROVIDER\n")
     csv_file.write(metadata["uuid"] + "," + metadata["platform"]["name"] + "," + metadata["date"] + "," + metadata["providerContactPoint"]["orgName"])
 
@@ -16,7 +20,7 @@ def add_uuid_to_xyz(tar, tar_info):
     uuid = file_name[9:41]
 
     print("Adding " + uuid + " to xyz")
-    new_file_name = r"output/xyz/uuid_" + file_name
+    new_file_name = output_dir + "xyz/uuid_" + file_name
     new_xyz_file = open(new_file_name,"w+")
     new_xyz_file.write("UUID,LAT,LON,DEPTH,TIME\n")
 
@@ -91,5 +95,10 @@ def recurse_dir(root_dir):
 if __name__ == '__main__':
     # Get full size of home directory
     ## Switch to config file for data directory
-    recurse_dir("data")
+    with open(r"../config/config.yml") as f:
+        docs = yaml.load(f, Loader=yaml.FullLoader)
+        project_dir = docs["project_dir"]
+        output_dir = docs["output_dir"]
+        data_dir = docs["data_dir"]
+    recurse_dir(data_dir)
 
