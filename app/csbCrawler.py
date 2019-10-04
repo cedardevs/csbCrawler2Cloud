@@ -6,7 +6,7 @@ import os
 import tarfile
 
 def write_metadata_to_csv(metadata, csv_file_name):
-    csv_file = open("output/" + csv_file_name, "w")
+    csv_file = open("output/metadata/" + csv_file_name, "w")
     csv_file.write("UUID,NAME,DATE,PROVIDER\n")
     csv_file.write(metadata["uuid"] + "," + metadata["platform"]["name"] + "," + metadata["date"] + "," + metadata["providerContactPoint"]["orgName"])
 
@@ -16,7 +16,7 @@ def add_uuid_to_xyz(tar, tar_info):
     uuid = file_name[9:41]
 
     print("Adding " + uuid + " to xyz")
-    new_file_name = r"output/uuid_" + file_name
+    new_file_name = r"output/xyz/uuid_" + file_name
     new_xyz_file = open(new_file_name,"w+")
     new_xyz_file.write("UUID,LAT,LON,DEPTH,TIME\n")
 
