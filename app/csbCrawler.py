@@ -1,12 +1,42 @@
 # Extract CSB files
 
-import io
+import boto3
 import json
 import os
 import tarfile
+import yaml
+
+project_dir = ""
+output_dir = ""
+data_dir = ""
+bucket = ""
+
+access_key = ""
+secret_key = ""
+
+def upload_to_aws(local_file, bucket, s3_file):
+
+    s3 = boto3.client('s3', aws_access_key_id=access_key,
+                      aws_secret_access_key=secret_key)
+
+    try:
+        s3.upload_file(local_file, bucket, s3_file)
+        print("Upload Successful")
+        return True
+    except FileNotFoundError:
+        print("The file was not found")
+        return False
+
+def upload_files_to_aws():
+    #upload metadata
+    for item in os.listdir(output_dir+"metadata/"):
+        item_full_path = os.path.join(output_dir, item)
+        item_relative_path = "metadata/" + item
+        upload_to_aws(item_full_path, bucket, item_relative_path)
+
 
 def write_metadata_to_csv(metadata, csv_file_name):
-    csv_file = open("output/metadata/" + csv_file_name, "w")
+    csv_file = open(output_dir + "metadata/" + csv_file_name, "w")
     csv_file.write("UUID,NAME,DATE,PROVIDER\n")
     csv_file.write(metadata["uuid"] + "," + metadata["platform"]["name"] + "," + metadata["date"] + "," + metadata["providerContactPoint"]["orgName"])
 
@@ -16,7 +46,7 @@ def add_uuid_to_xyz(tar, tar_info):
     uuid = file_name[9:41]
 
     print("Adding " + uuid + " to xyz")
-    new_file_name = r"output/xyz/uuid_" + file_name
+    new_file_name = output_dir + "xyz/uuid_" + file_name
     new_xyz_file = open(new_file_name,"w+")
     new_xyz_file.write("UUID,LAT,LON,DEPTH,TIME\n")
 
@@ -91,5 +121,25 @@ def recurse_dir(root_dir):
 if __name__ == '__main__':
     # Get full size of home directory
     ## Switch to config file for data directory
-    recurse_dir("data")
+    with open(r"../config/config.yml") as f:
+        docs = yaml.load(f, Loader=yaml.FullLoader)
+        project_dir = docs["project_dir"]
+        output_dir = docs["output_dir"]
+        data_dir = docs["data_dir"]
+        bucket = docs["bucket"]
+
+    #recurse_dir(data_dir)
+
+    ## Load credentials
+    with open(r"../config/credentials.yml") as f:
+        secrets = yaml.load(f, Loader=yaml.FullLoader)
+        access_key = secrets["ACCESS_KEY"]
+        secret_key = secrets["SECRET_KEY"]
+
+
+    upload_files_to_aws()
+    #local_file = output_dir+"metadata/20190507_3c91af53f76c832fe429ac12e058b2e5_metadata.csv"
+
+    #upload_to_aws(local_file,"csbxyzfiles","metadata/20190507_3c91af53f76c832fe429ac12e058b2e5_metadata.csv")
+
 
