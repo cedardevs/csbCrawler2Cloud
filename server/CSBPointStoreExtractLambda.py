@@ -17,15 +17,15 @@ def lambda_handler(event, context):
     email = str(event['email'])
     name = str(event['platform.name'])
     bbox = str(event['bbox'])
+    bbox_coords = bbox.split(",")
+    bbox_polygon = bbox_coords[0] + " " + bbox_coords[1] + ", " + bbox_coords[2] + " " + bbox_coords[1] + ", " + \
+                   bbox_coords[2] + " " + bbox_coords[3] + ", " + bbox_coords[0] + " " + bbox_coords[3]
 
-    # created query
-    query = "SELECT * FROM %s.%s where %s = '%s' limit 1000;" % (DATABASE, TABLE, COLUMN, name)
+    # create query
 
-    # TODO Support spatial query
-    # e.g. SELECT COUNT(*) cnt
-    # FROM csbathenadb.csb_view
-    # WHERE ST_INTERSECTS (ST_POLYGON('polygon((-140.0 24.0, -110.0 24.0, -110.0 32.0, -140.0 32.0))'), ST_POINT(csb_view.lon, csb_view.lat))
-
+    query = "SELECT * FROM %s.%s where %s = '%s' and ST_INTERSECTS (ST_POLYGON('polygon((%s))'), ST_POINT(csb_view.lon, csb_view.lat)) limit 1000;" % (
+    DATABASE, TABLE, COLUMN, name, bbox_polygon)
+    print("query=" + query)
     print(query)
 
     # athena client
