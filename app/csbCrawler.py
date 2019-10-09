@@ -59,6 +59,8 @@ def add_uuid_to_xyz(tar, tar_info):
         #TODO add more validation checks?
         line = uuid + "," + (xyz_file.readline()).decode("UTF-8").strip()
         tokens = line.split(",")
+        timestamp = tokens[4]
+        print (timestamp)
 
         if len(tokens) == 5:
             print("Line {}: {}".format(cnt, line))
@@ -121,7 +123,7 @@ def recurse_dir(root_dir):
 if __name__ == '__main__':
     # Get full size of home directory
     ## Switch to config file for data directory
-    with open(r"../config/config.yml") as f:
+    with open("/Users/dneufeld/Repos/csbCrawler2Cloud/config/config.yml") as f:
         docs = yaml.load(f, Loader=yaml.FullLoader)
         project_dir = docs["project_dir"]
         output_dir = docs["output_dir"]
@@ -131,15 +133,12 @@ if __name__ == '__main__':
     #recurse_dir(data_dir)
 
     ## Load credentials
-    with open(r"../config/credentials.yml") as f:
+    with open("/Users/dneufeld/Repos/csbCrawler2Cloud/config/credentials.yml") as f:
         secrets = yaml.load(f, Loader=yaml.FullLoader)
         access_key = secrets["ACCESS_KEY"]
         secret_key = secrets["SECRET_KEY"]
 
 
-    upload_files_to_aws()
-    #local_file = output_dir+"metadata/20190507_3c91af53f76c832fe429ac12e058b2e5_metadata.csv"
-
-    #upload_to_aws(local_file,"csbxyzfiles","metadata/20190507_3c91af53f76c832fe429ac12e058b2e5_metadata.csv")
+    #upload_files_to_aws()
 
 

@@ -1,5 +1,5 @@
-project_dir: /Users/david.neufeld/repos/csbCrawler2Cloud/
+project_dir: /Users/dneufeld/Repos/csbCrawler2Cloud/
 #data_dir: /Users/david.neufeld/data/CSB/ROSEP
-data_dir: /Users/david.neufeld/repos/csbCrawler2Cloud/data/
-output_dir: /Users/david.neufeld/data/CSB/reprocessed/
+data_dir: /Users/dneufeld/Repos/csbCrawler2Cloud/data/
+output_dir: /Users/dneufeld/Repos/output/
 bucket: "csbxyzfiles"
