@@ -1,15 +1,25 @@
 import unittest
 import tarfile
-import app.csbCrawler
+from app.CsbCrawler import CsbCrawler
 
 class csbCrawlerTest(unittest.TestCase):
-    metadata_file_name = r"../data/20190626_8bfee6d7ec345d3b503a4ed3adc0288b_metadata.json"
-    xyz_file_name = r"../data/20190626_8bfee6d7ec345d3b503a4ed3adc0288b_pointData.xyz"
-    tar_file_name = r"../data/20190626_8bfee6d7ec345d3b503a4ed3adc0288b.tar.gz"
+    csbCrawler = None
+    metadata_file_name = ""
+    xyz_file_name = ""
+    tar_file_name = ""
+
+    def setUp(self):
+        self.csbCrawler = CsbCrawler()
+        self.metadata_file_name = self.csbCrawler.data_dir + "20190626_8bfee6d7ec345d3b503a4ed3adc0288b_metadata.json"
+        self.xyz_file_name = self.csbCrawler.data_dir + "20190626_8bfee6d7ec345d3b503a4ed3adc0288b_pointData.xyz"
+        self.tar_file_name = self.csbCrawler.data_dir + "20190626_8bfee6d7ec345d3b503a4ed3adc0288b.tar.gz"
+
+    def tearDown(self):
+        self.csbCrawler = None
 
     def test_parse_metadata(self):
         metadata_file = open(self.metadata_file_name, "r")
-        metadata = app.csbCrawler.parse_metadata(metadata_file)
+        metadata = self.csbCrawler.parse_metadata(metadata_file)
         metadata_file.close()
         self.assertTrue(metadata['platform']['name'], "Joe Pyne")
         self.assertTrue(metadata['platform']['uniqueID'], "ROSEP-ffa635f8-7aa4-49d8-bc04-581457fb9e46")
@@ -18,11 +28,15 @@ class csbCrawlerTest(unittest.TestCase):
     def test_process_file(self):
         metadata_file = open(self.metadata_file_name, "r")
         tar = tarfile.open(self.tar_file_name, "r:gz")
-        metadata = app.csbCrawler.parse_metadata(metadata_file)
-        app.csbCrawler.process_tar(tar, metadata)
+        metadata = self.csbCrawler.parse_metadata(metadata_file)
+        self.csbCrawler.process_xyz_files(tar, metadata)
         # Close files
         metadata_file.close()
         tar.close()
 
-if __name__ == '__main__':
-    unittest.main()
+
+    def test_checkDateISO(self):
+        obsTime = self.csbCrawler.isoFormatter("20180410T140006Z")
+        print(obsTime)
+        self.assertEquals(obsTime, "2018-04-10T14:00:06")
+
