@@ -1,5 +1,6 @@
 import unittest
 import tarfile
+import os
 from app.CsbCrawler import CsbCrawler
 
 class csbCrawlerTest(unittest.TestCase):
@@ -9,7 +10,8 @@ class csbCrawlerTest(unittest.TestCase):
     tar_file_name = ""
 
     def setUp(self):
-        self.csbCrawler = CsbCrawler()
+        root_dir = os.getenv("CSBCRAWLER")
+        self.csbCrawler = CsbCrawler(root_dir)
         self.metadata_file_name = self.csbCrawler.data_dir + "20190626_8bfee6d7ec345d3b503a4ed3adc0288b_metadata.json"
         self.xyz_file_name = self.csbCrawler.data_dir + "20190626_8bfee6d7ec345d3b503a4ed3adc0288b_pointData.xyz"
         self.tar_file_name = self.csbCrawler.data_dir + "20190626_8bfee6d7ec345d3b503a4ed3adc0288b.tar.gz"
@@ -36,7 +38,7 @@ class csbCrawlerTest(unittest.TestCase):
 
 
     def test_checkDateISO(self):
-        obsTime = self.csbCrawler.isoFormatter("20180410T140006Z")
+        obsTime = self.csbCrawler.timeFormatter("20180410T140006Z")
         print(obsTime)
-        self.assertEquals(obsTime, "2018-04-10T14:00:06")
+        self.assertEqual(str(obsTime), "2018-04-10T14:00:06")
 

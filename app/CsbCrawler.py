@@ -47,9 +47,9 @@ class CsbCrawler:
         csv_file.write(metadata["uuid"] + "," + metadata["platform"]["name"] + "," + metadata["date"] + "," + metadata["providerContactPoint"]["orgName"])
         csv_file.close()
 
-    def isoFormatter(self, obsTimeStr):
+    def timeFormatter(self, obsTimeStr):
         obsTime = datetime.strptime(obsTimeStr, '%Y%m%dT%H%M%SZ')
-        return obsTime.isoformat("T", timespec="seconds")
+        return obsTime.isoformat()
 
     def add_uuid_to_xyz(self, tar, tar_info):
         xyz_file = tar.extractfile(tar_info)
@@ -73,8 +73,8 @@ class CsbCrawler:
 
             if len(tokens) == 4:
                 obsTimeStr = tokens[3]
-                obsTimeIso = self.isoFormatter(obsTimeStr)
-                newLine = uuid + "," + tokens[0] + "," + tokens[1] + "," + tokens[2] + "," + obsTimeIso
+                obsTime = self.timeFormatter(obsTimeStr)
+                newLine = uuid + "," + tokens[0] + "," + tokens[1] + "," + tokens[2] + "," + obsTime
                 print("Line {}: {}".format(cnt, newLine))
                 new_xyz_file.write(newLine + "\n")
 
@@ -99,6 +99,7 @@ class CsbCrawler:
 
     # Extract file
     def extract_metadata(self, tar):
+        metadata = None
         for tar_info in tar:
 
             if tar_info.isreg() and tar_info.name[-13:] == "metadata.json":
@@ -132,8 +133,8 @@ class CsbCrawler:
                     self.process_xyz_files(tar, metadata)
                     tar.close
 
-    def __init__(self):
-        root_dir = os.getenv("CSBCRAWLER")
+    def __init__(self, root_dir):
+
         print("root_dir=" + root_dir)
         with open(root_dir + "config/config.yml") as f:
             docs = yaml.load(f, Loader=yaml.FullLoader)
