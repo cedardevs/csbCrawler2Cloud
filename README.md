@@ -31,6 +31,6 @@ FROM
 WHERE
   from_iso8601_timestamp("xyz"."time")
 BETWEEN 
-  parse_datetime('2015-01-01-00:00:00','yyyy-MM-dd-HH:mm:ss') 
+  from_iso8601_timestamp('2015-01-01T00:00:00') 
 AND 
-  parse_datetime('2019-01-01-23:59:00','yyyy-MM-dd-HH:mm:ss')   
+  from_iso8601_timestamp('2019-01-01T23:59:00')    
