@@ -48,8 +48,12 @@ class CsbCrawler:
         csv_file.close()
 
     def timeFormatter(self, obsTimeStr):
-        obsTime = datetime.strptime(obsTimeStr, '%Y%m%dT%H%M%SZ')
-        return obsTime.isoformat()
+        try:
+            obsTime = datetime.strptime(obsTimeStr, '%Y%m%dT%H%M%SZ')
+            return obsTime.isoformat("T", timespec="seconds")
+        except ValueError as ve:
+            print("Invalid date format, skipping...")
+            return None
 
     def add_uuid_to_xyz(self, tar, tar_info):
         xyz_file = tar.extractfile(tar_info)
@@ -74,9 +78,12 @@ class CsbCrawler:
             if len(tokens) == 4:
                 obsTimeStr = tokens[3]
                 obsTime = self.timeFormatter(obsTimeStr)
-                newLine = uuid + "," + tokens[0] + "," + tokens[1] + "," + tokens[2] + "," + obsTime
-                print("Line {}: {}".format(cnt, newLine))
-                new_xyz_file.write(newLine + "\n")
+                if (obsTime!=None):
+                    newLine = uuid + "," + tokens[0] + "," + tokens[1] + "," + tokens[2] + "," + obsTime
+                    print("Line {}: {}".format(cnt, newLine))
+                    new_xyz_file.write(newLine + "\n")
+
+
 
             cnt += 1
 
