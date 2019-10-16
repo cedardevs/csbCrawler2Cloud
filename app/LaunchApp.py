@@ -7,6 +7,8 @@ class LaunchApp:
         root_dir = os.getenv("CSBCRAWLER")
 
         csbCrawler = CsbCrawler(root_dir)
+
+        #Reprocess available local data
         csbCrawler.recurse_dir(root_dir + "data/")
 
         #Upload metadata
