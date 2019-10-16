@@ -9,7 +9,6 @@ import yaml
 
 class CsbCrawler:
 
-    project_dir = ""
     output_dir = ""
     data_dir = ""
     bucket = ""
@@ -145,7 +144,6 @@ class CsbCrawler:
         print("root_dir=" + root_dir)
         with open(root_dir + "config/config.yml") as f:
             docs = yaml.load(f, Loader=yaml.FullLoader)
-            self.project_dir = docs["project_dir"]
             self.output_dir = docs["output_dir"]
             self.data_dir = docs["data_dir"]
             self.bucket = docs["bucket"]
