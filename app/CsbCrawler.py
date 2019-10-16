@@ -12,6 +12,7 @@ class CsbCrawler:
     output_dir = ""
     data_dir = ""
     bucket = ""
+    test_data_dir = ""
 
     access_key = ""
     secret_key = ""
@@ -146,6 +147,7 @@ class CsbCrawler:
             docs = yaml.load(f, Loader=yaml.FullLoader)
             self.output_dir = docs["output_dir"]
             self.data_dir = docs["data_dir"]
+            self.test_data_dir = docs["test_data_dir"]
             self.bucket = docs["bucket"]
 
         ## Load credentials

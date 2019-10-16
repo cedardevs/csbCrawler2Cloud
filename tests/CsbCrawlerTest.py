@@ -12,9 +12,9 @@ class csbCrawlerTest(unittest.TestCase):
     def setUp(self):
         root_dir = os.getenv("CSBCRAWLER")
         self.csbCrawler = CsbCrawler(root_dir)
-        self.metadata_file_name = self.csbCrawler.data_dir + "20190626_8bfee6d7ec345d3b503a4ed3adc0288b_metadata.json"
-        self.xyz_file_name = self.csbCrawler.data_dir + "20190626_8bfee6d7ec345d3b503a4ed3adc0288b_pointData.xyz"
-        self.tar_file_name = self.csbCrawler.data_dir + "20190626_8bfee6d7ec345d3b503a4ed3adc0288b.tar.gz"
+        self.metadata_file_name = self.csbCrawler.test_data_dir + "20190626_8bfee6d7ec345d3b503a4ed3adc0288b_metadata.json"
+        self.xyz_file_name = self.csbCrawler.test_data_dir + "20190626_8bfee6d7ec345d3b503a4ed3adc0288b_pointData.xyz"
+        self.tar_file_name = self.csbCrawler.test_data_dir + "20190626_8bfee6d7ec345d3b503a4ed3adc0288b.tar.gz"
 
     def tearDown(self):
         self.csbCrawler = None
