@@ -11,17 +11,20 @@ Going forward the data lands on NCEI disk as a tarball with 3 files:
  ### Athena Notes
 -- Generate timestamp column
  SELECT *, from_iso8601_timestamp("xyz"."time") ts FROM csbathenadb.xyz 
- 
--- Create View
- CREATE OR REPLACE VIEW csb_view AS 
-SELECT
+
+-- Create parquet table 
+CREATE TABLE csbathenadb.csb_mv
+WITH (
+  format='PARQUET',
+  external_location='s3://csbxyzfiles/optimized/'
+) AS SELECT
   xyz.*
 , "metadata"."name"
 , "metadata"."provider"
 FROM
   xyz
 , metadata
-WHERE ("xyzt"."uuid" = "metadata"."uuid")
+WHERE ("xyz"."uuid" = "metadata"."uuid")
 
 -- Query using dates
 SELECT
@@ -33,4 +36,14 @@ WHERE
 BETWEEN 
   from_iso8601_timestamp('2015-01-01T00:00:00') 
 AND 
-  from_iso8601_timestamp('2019-01-01T23:59:00')    
+  from_iso8601_timestamp('2019-01-01T23:59:00')   
+  
+### Example Request 
+{
+  "uuid": "",
+  "email": "david.neufeld@colorado.edu",
+  "platform.name": "Tenacity",
+  "bbox": "-140.0,24.0,-111.0,32.0",
+  "sdate": "2015-01-01T00:00:00",
+  "edate": "2019-01-01T23:59:00"
+}
