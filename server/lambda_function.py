@@ -1,14 +1,14 @@
 import json
 import time
 import boto3
-from email_user import EmailUser
 
 # athena constant
 DATABASE = 'csbathenadb'
 TABLE = 'csb_mv'
-S3_OUTPUT = 's3://aws-athena-query-results-411735806573-us-east-2/'
-S3_ACCESS = 'https://s3.us-east-2.amazonaws.com/aws-athena-query-results-411735806573-us-east-2/'
-RETRY_COUNT = 3
+S3_OUTPUT = 's3://nesdis-ncei-csb/output/'
+S3_ACCESS = 'https://s3.us-east-2.amazonaws.com/nesdis-ncei-csb/output/'
+RETRY_COUNT = 7
+SLEEP = 2
 
 
 def lambda_handler(event, context):
@@ -80,13 +80,13 @@ def lambda_handler(event, context):
             break
 
         if query_execution_status == 'FAILED':
-            # raise Exception("STATUS:" + str(query_execution_status))
+            print("STATUS:" + str(query_execution_status))
             print("FAILED")
             return None
 
         else:
             print("STATUS:" + query_execution_status)
-            time.sleep(10)
+            time.sleep(SLEEP)
     else:
         client.stop_query_execution(QueryExecutionId=query_execution_id)
         raise Exception('TIME OVER')
@@ -94,11 +94,8 @@ def lambda_handler(event, context):
     access_url = S3_ACCESS + query_execution_id + ".csv"
     print("URL:" + access_url)
 
-    if recipient:
-        # Send email
-        email_user = EmailUser()
-        email_user.send(recipient, access_url)
     return {
         'statusCode': 200,
-        'body': json.dumps("access_url: " + access_url)
+        'access_url': access_url
     }
+
