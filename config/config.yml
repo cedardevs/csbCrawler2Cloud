@@ -1,5 +1,10 @@
-project_dir: /Users/david.neufeld/repos/csbCrawler2Cloud/
-data_dir: /Users/david.neufeld/data/CSB/ROSEP
-test_data_dir: /Users/david.neufeld/repos/csbCrawler2Cloud/data/
-output_dir: /Users/david.neufeld/data/CSB/reprocessed/
+project_dir: /Users/dneufeld/repos/csbCrawler2Cloud/
+data_dir: /Users/dneufeld/repos/csbCrawler2Cloud/data/
+test_data_dir: /Users/dneufeld/repos/csbCrawler2Cloud/data/
+output_dir: /Users/dneufeld/repos/csbCrawler2Cloud/output/
 bucket: "csbxyzfiles"
+
+#project_dir: /Users/david.neufeld/repos/csbCrawler2Cloud/
+#data_dir: /Users/david.neufeld/data/CSB/ROSEP
+#test_data_dir: /Users/david.neufeld/repos/csbCrawler2Cloud/data/
+#output_dir: /Users/david.neufeld/data/CSB/reprocessed/
