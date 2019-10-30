@@ -151,7 +151,7 @@ class CsbCrawler:
             self.bucket = docs["bucket"]
 
         ## Load credentials
-        with open(root_dir + "config/credentials.yml") as f:
+        with open(root_dir + "config/nesdis-csb-credentials.yml") as f:
             secrets = yaml.load(f, Loader=yaml.FullLoader)
             self.access_key = secrets["ACCESS_KEY"]
             self.secret_key = secrets["SECRET_KEY"]
