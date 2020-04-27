@@ -1,7 +1,17 @@
 # csbCrawler2Cloud
 Python script to load csb data to s3 buckets
 
-Going forward the data lands on NCEI disk as a tarball with 3 files:
+### Environment variable
+Assumes
+ -  CSBCRAWLER is set to the root of this project
+
+### Libraries
+Uses
+ - boto3
+ - pyyaml
+
+### File convention assumed  
+The data lands on NCEI disk as a tarball with 3 files:
  - YYYYMMDD_uuid_geojson.json
  - YYYYMMDD_uuid_metadata.json
  - YYYYMMDD_uuid_pointData.xyz

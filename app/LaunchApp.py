@@ -9,7 +9,7 @@ class LaunchApp:
         csbCrawler = CsbCrawler(root_dir)
 
         #Reprocess available local data
-        #csbCrawler.recurse_dir(csbCrawler.data_dir)
+        csbCrawler.recurse_dir(csbCrawler.data_dir)
 
         #Upload metadata
         csbCrawler.upload_files_to_aws("metadata/")

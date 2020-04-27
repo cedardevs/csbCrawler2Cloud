@@ -143,7 +143,7 @@ class CsbCrawler:
     def __init__(self, root_dir):
 
         print("root_dir=" + root_dir)
-        with open(root_dir + "config/config.yml") as f:
+        with open(root_dir + "config/config.yaml") as f:
             docs = yaml.load(f, Loader=yaml.FullLoader)
             self.output_dir = docs["output_dir"]
             self.data_dir = docs["data_dir"]
@@ -151,7 +151,7 @@ class CsbCrawler:
             self.bucket = docs["bucket"]
 
         ## Load credentials
-        with open(root_dir + "config/nesdis-csb-credentials.yml") as f:
+        with open(root_dir + "config/odp_csb.yaml") as f:
             secrets = yaml.load(f, Loader=yaml.FullLoader)
             self.access_key = secrets["ACCESS_KEY"]
             self.secret_key = secrets["SECRET_KEY"]

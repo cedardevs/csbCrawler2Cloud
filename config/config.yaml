@@ -1,0 +1,5 @@
+project_dir: /Users/dneufeld/repos/csbCrawler2Cloud/
+data_dir: /Users/dneufeld/data/CSB/ROSEP
+test_data_dir: /Users/dneufeld/repos/csbCrawler2Cloud/data/
+output_dir: /Users/dneufeld/repos/csbCrawler2Cloud/data/reprocessed/
+bucket: "odp-noaa-nesdis-ncei-test"
