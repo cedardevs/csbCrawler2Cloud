@@ -1,5 +1,6 @@
 import os
 from app.CsbCrawler import CsbCrawler
+import app.awsutil as awsutil
 
 class LaunchApp:
 
@@ -9,10 +10,10 @@ class LaunchApp:
         csbCrawler = CsbCrawler(root_dir)
 
         #Reprocess available local data
-        csbCrawler.recurse_dir(csbCrawler.data_dir)
+        #csbCrawler.recurse_dir(csbCrawler.data_dir)
 
         #Upload metadata
-        csbCrawler.upload_files_to_aws("metadata/")
+        awsutil.upload_files_to_aws(csbCrawler, "metadata/")
 
         #Upload xyz
-        csbCrawler.upload_files_to_aws("xyz/")
+        awsutil.upload_files_to_aws(csbCrawler, "xyz/")

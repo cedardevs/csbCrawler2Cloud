@@ -1,14 +1,13 @@
 # Extract CSB files
 
-import boto3
 from datetime import datetime
 import json
 import os
 import tarfile
 import yaml
 
-class CsbCrawler:
 
+class CsbCrawler:
     output_dir = ""
     data_dir = ""
     bucket = ""
@@ -16,30 +15,6 @@ class CsbCrawler:
 
     access_key = ""
     secret_key = ""
-
-    def upload_to_aws(self, local_file, bucket, s3_file):
-
-        s3 = boto3.client('s3', aws_access_key_id=self.access_key,
-                          aws_secret_access_key=self.secret_key)
-
-        try:
-            s3.upload_file(local_file, bucket, s3_file)
-            print("Upload Successful")
-            return True
-        except FileNotFoundError:
-            print("The file was not found")
-            return False
-
-    def upload_files_to_aws(self, sub_dir):
-        #upload metadata
-        print("output_dir=" + self.output_dir)
-        upload_dir = self.output_dir + sub_dir
-        for item in os.listdir(upload_dir):
-            item_full_path = os.path.join(upload_dir, item)
-            item_relative_path = sub_dir + item
-            print(item_full_path + "; " + item_relative_path)
-            self.upload_to_aws(item_full_path, self.bucket, item_relative_path)
-
 
     def write_metadata_to_csv(self, metadata, csv_file_name):
         csv_file = open(self.output_dir + "metadata/" + csv_file_name, "w")
@@ -82,8 +57,6 @@ class CsbCrawler:
                     newLine = uuid + "," + tokens[0] + "," + tokens[1] + "," + tokens[2] + "," + obsTime
                     print("Line {}: {}".format(cnt, newLine))
                     new_xyz_file.write(newLine + "\n")
-
-
 
             cnt += 1
 
@@ -151,7 +124,7 @@ class CsbCrawler:
             self.bucket = docs["bucket"]
 
         ## Load credentials
-        with open(root_dir + "config/odp_csb.yaml") as f:
+        with open(root_dir + "config/credentials.yaml") as f:
             secrets = yaml.load(f, Loader=yaml.FullLoader)
             self.access_key = secrets["ACCESS_KEY"]
             self.secret_key = secrets["SECRET_KEY"]
