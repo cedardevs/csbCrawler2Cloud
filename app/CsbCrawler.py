@@ -10,15 +10,6 @@ from typing import Any, Union
 import yaml
 
 
-def time_formatter(obsTimeStr):
-    try:
-        obsTime = datetime.strptime(obsTimeStr, '%Y%m%dT%H%M%SZ')
-        return obsTime.isoformat("T", timespec="seconds")
-    except ValueError as ve:
-        print("Invalid date format, skipping...")
-        return None
-
-
 class CsbCrawler:
     output_dir = ""
     data_dir = ""
@@ -27,6 +18,15 @@ class CsbCrawler:
 
     access_key = ""
     secret_key = ""
+
+    @staticmethod
+    def time_formatter(obs_time_str):
+        try:
+            obs_time = datetime.strptime(obs_time_str, '%Y%m%dT%H%M%SZ')
+            return obs_time.isoformat("T", timespec="seconds")
+        except ValueError as ve:
+            print("Invalid date format, skipping...")
+            return None
 
     def write_metadata_to_csv(self, metadata, csv_file_name):
         csv_file = open(self.output_dir + "metadata/" + csv_file_name, "w")
@@ -57,7 +57,7 @@ class CsbCrawler:
 
             if len(tokens) == 4:
                 obs_time_str = tokens[3]
-                obs_time = time_formatter(obs_time_str)
+                obs_time = self.time_formatter(obs_time_str)
                 if (obs_time != None):
                     new_line = uuid + "," + tokens[0] + "," + tokens[1] + "," + tokens[2] + "," + obs_time
                     print("Line {}: {}".format(cnt, new_line))
