@@ -32,14 +32,17 @@ class csbCrawlerTest(unittest.TestCase):
         metadata_file = open(self.metadata_file_name, "r")
         tar = tarfile.open(self.tar_file_name, "r:gz")
         metadata = self.csbCrawler.parse_metadata(metadata_file)
-        self.csbCrawler.process_xyz_files(tar, metadata)
+        self.csbCrawler.process_xyz_files(tar)
         # Close files
         metadata_file.close()
         tar.close()
 
 
-    def test_checkDateISO(self):
-        obsTime = self.csbCrawler.timeFormatter("20180410T140006Z")
-        print(obsTime)
-        self.assertEqual(str(obsTime), "2018-04-10T14:00:06")
+    def test_check_date_iso(self):
+        obs_time = CsbCrawler.time_formatter("20180410T140006Z")
+        print(obs_time)
+        self.assertEqual(str(obs_time), "2018-04-10T14:00:06")
+
+    #def test_spatial_join(self):
+    #    self.csbCrawler
 
