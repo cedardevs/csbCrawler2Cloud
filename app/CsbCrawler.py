@@ -8,6 +8,7 @@ from tarfile import TarFile
 from typing import Any, Union
 
 import yaml
+import app.spatialutil as spatialutil
 
 
 class CsbCrawler:
@@ -40,8 +41,8 @@ class CsbCrawler:
         file_name = os.path.basename(tar_info.name)
         uuid = file_name[9:41]
 
-        print("Adding " + uuid + " to xyz")
-        new_file_name = self.output_dir + "xyz/uuid_" + file_name
+        print("Adding " + uuid + " to csv")
+        new_file_name = self.output_dir + "xyz/uuid_" + file_name[:-4] + ".csv"
         new_xyz_file = open(new_file_name, "w+")
         new_xyz_file.write("UUID,LAT,LON,DEPTH,TIME\n")
 
@@ -67,6 +68,14 @@ class CsbCrawler:
 
         xyz_file.close()
         new_xyz_file.close()
+        # Perform spatial join on new xyz file
+        pts_to_share = spatialutil.spatial_join(self, new_xyz_file.name)
+
+        # Remove unnecessary columns
+        pts_to_share = pts_to_share[['UUID', 'LAT', 'LON', 'DEPTH', 'TIME']]
+
+        # Write back out as a csv
+        pts_to_share.to_csv(self.data_dir + "reprocessed/xyz/" + file_name[:-4] + "_filtered.csv", index=False)
 
     def parse_metadata(self, metadata_file):
         # Date is represented in filename YYYYMMDD
