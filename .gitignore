@@ -2,3 +2,4 @@ data/reprocessed/shapefiles
 data/reprocessed/metadata
 config/credentials.yaml
 Pipfile.lock
+.idea
