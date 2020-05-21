@@ -13,7 +13,7 @@ class LaunchApp:
         csbCrawler.recurse_dir(csbCrawler.data_dir)
 
         #Upload metadata
-        awsutil.upload_files_to_aws(csbCrawler, "metadata/")
+        #awsutil.upload_files_to_aws(csbCrawler, "metadata/")
 
         #Upload xyz
-        awsutil.upload_files_to_aws(csbCrawler, "xyz/")
+        #awsutil.upload_files_to_aws(csbCrawler, "xyz/")

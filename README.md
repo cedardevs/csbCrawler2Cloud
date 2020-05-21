@@ -1,14 +1,25 @@
 # csbCrawler2Cloud
-Python script to load csb data to s3 buckets
+Python script to load csb data to s3 buckets. Python 3 recommended.
 
 ### Environment variable
 Assumes
  -  CSBCRAWLER is set to the root of this project
+    - If you are at the project root, run 
+    ```bash
+       $ export CSBCRAWLER=`pwd`
+    ```bb
+    - To confirm the current value
+    ```bash
+       $ printenv CSBCRAWLER
+       /Users/ktanaka/src/github/cedardevs/csbCrawler2Cloud
+    ```
 
 ### Libraries
 Uses
  - boto3
  - pyyaml
+ 
+Example installation command: `pip3 install --user boto3`
 
 ### File convention assumed  
 The data lands on NCEI disk as a tarball with 3 files:
