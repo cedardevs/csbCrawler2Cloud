@@ -1,6 +1,5 @@
 import os
 import json
-import sys
 
 def write_csv_file(fname, platform, features):
   f = open(os.path.join('/nfs/csb_data/csv', os.path.splitext(fname)[0] + '.csv'), 'w')
