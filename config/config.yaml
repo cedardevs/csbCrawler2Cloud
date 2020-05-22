@@ -2,4 +2,5 @@
 data_dir: data/
 test_data_dir: data/
 output_dir: data/reprocessed/
+enable_upload: false
 bucket: "odp-noaa-nesdis-ncei-test"

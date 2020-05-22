@@ -9,11 +9,14 @@ csbCrawler = CsbCrawler(root_dir)
 # Crawl and process files
 csbCrawler.recurse_dir(csbCrawler.data_dir)
 
-# Upload metadata
-#awsutil.upload_files_to_aws(csbCrawler, "metadata/")
+if csbCrawler.enable_upload:
+  # Upload metadata
+  print("Uploading metadata")
+  #awsutil.upload_files_to_aws(csbCrawler, "metadata/")
 
-# Upload xyz
-#awsutil.upload_files_to_aws(csbCrawler, "xyz/")
+  # Upload xyz
+  print("Uploading xyz")
+  #awsutil.upload_files_to_aws(csbCrawler, "xyz/")
 
 
 

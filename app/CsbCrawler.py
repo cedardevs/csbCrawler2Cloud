@@ -17,6 +17,7 @@ class CsbCrawler:
     bucket = ""
     test_data_dir = ""
 
+    enable_upload = False
     access_key = ""
     secret_key = ""
 
@@ -133,6 +134,8 @@ class CsbCrawler:
             self.output_dir    = docs["output_dir"]    if docs["output_dir"].startswith('/')    else (root_dir + '/' + docs["output_dir"])
             self.data_dir      = docs["data_dir"]      if docs["data_dir"].startswith('/')      else (root_dir + '/' + docs["data_dir"])
             self.test_data_dir = docs["test_data_dir"] if docs["test_data_dir"].startswith('/') else (root_dir + '/' + docs["test_data_dir"])
+            self.enable_upload = docs["enable_upload"]
+            print("Uploads enabled: %s" % (self.enable_upload))
             self.bucket = docs["bucket"]
 
         # Load credentials
