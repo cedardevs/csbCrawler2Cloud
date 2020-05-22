@@ -1,5 +1,5 @@
-project_dir: /Users/dneufeld/repos/csbCrawler2Cloud/
-data_dir: /Users/dneufeld/repos/csbCrawler2Cloud/data/
-test_data_dir: /Users/dneufeld/repos/csbCrawler2Cloud/data/
-output_dir: /Users/dneufeld/repos/csbCrawler2Cloud/data/reprocessed/
+# _dirs should end in '/'. Relative dirs are relative to the CSBCRAWLER environment variable.
+data_dir: data/
+test_data_dir: data/
+output_dir: data/reprocessed/
 bucket: "odp-noaa-nesdis-ncei-test"

@@ -127,15 +127,16 @@ class CsbCrawler:
 
     def __init__(self, root_dir):
         print("root_dir=" + root_dir)
-        with open(root_dir + "config/config.yaml") as f:
+        with open(root_dir + "/config/config.yaml") as f:
             docs = yaml.load(f, Loader=yaml.FullLoader)
-            self.output_dir = docs["output_dir"]
-            self.data_dir = docs["data_dir"]
-            self.test_data_dir = docs["test_data_dir"]
+            # Use config _dir values as-is if they are absolute (start with '/'), otherwise, they are relative to root_dir.
+            self.output_dir    = docs["output_dir"]    if docs["output_dir"].startswith('/')    else (root_dir + '/' + docs["output_dir"])
+            self.data_dir      = docs["data_dir"]      if docs["data_dir"].startswith('/')      else (root_dir + '/' + docs["data_dir"])
+            self.test_data_dir = docs["test_data_dir"] if docs["test_data_dir"].startswith('/') else (root_dir + '/' + docs["test_data_dir"])
             self.bucket = docs["bucket"]
 
         # Load credentials
-        with open(root_dir + "config/credentials.yaml") as f:
+        with open(root_dir + "/config/credentials.yaml") as f:
             secrets = yaml.load(f, Loader=yaml.FullLoader)
             self.access_key = secrets["ACCESS_KEY"]
             self.secret_key = secrets["SECRET_KEY"]
