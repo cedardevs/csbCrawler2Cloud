@@ -1,5 +1,5 @@
 # csbCrawler2Cloud
-Python script to load csb data to s3 buckets. Python 3 recommended.
+Python script to load csb data to s3 buckets
 
 ### Environment variable
 Assumes
@@ -15,20 +15,18 @@ Assumes
     ```
 
 ### Libraries
-Uses
- - boto3
- - pyyaml
- - geopandas
- 
-Example installation command: `pip3 install --user boto3`
+ - Pipenv is used to manage external libraries
 
+### Upload to AWS
+ - Requires credentials.yaml
+   ACCESS_KEY: xxx
+   SECRET_KEY: xxx
+   
 ### File convention assumed  
 The data lands on NCEI disk as a tarball with 3 files:
  - YYYYMMDD_uuid_geojson.json
  - YYYYMMDD_uuid_metadata.json
  - YYYYMMDD_uuid_pointData.xyz
- 
- 
  
 ### Athena Notes
 -- Generate timestamp column
