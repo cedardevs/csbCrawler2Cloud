@@ -15,7 +15,21 @@ Assumes
     ```
 
 ### Libraries
- - Pipenv is used to manage external libraries
+Pipenv is used to manage external libraries
+
+Verify python version 3.7+
+```bash
+pipenv run python --version
+```
+Install all dependencies "[Packages]" from the Pipfile
+```bash
+pipenv install
+```
+Run app
+```bash
+pipenv run python launch_app.py
+```
+  
 
 ### Upload to AWS
  - Requires credentials.yaml
