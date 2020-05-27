@@ -29,7 +29,12 @@ Run app
 ```bash
 pipenv run python launch_app.py
 ```
-  
+#### Troubleshooting
+These environment variables should be set by your ~/.profile (or ~/.bash_profile)
+```bash
+export LC_ALL='en_US.UTF-8'
+export LANG='en_US.UTF-8'
+```
 
 ### Upload to AWS
  - Requires credentials.yaml
