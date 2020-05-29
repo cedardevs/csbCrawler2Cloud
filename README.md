@@ -15,7 +15,7 @@ Assumes
     ```
 
 ### Libraries
-Pipenv is used to manage external libraries
+[Pipenv](https://pipenv-fork.readthedocs.io/en/latest/) is used to manage external libraries. `Pipfile` contains the list of dependencies under the [packages] section.
 
 Verify python version 3.7+
 ```bash

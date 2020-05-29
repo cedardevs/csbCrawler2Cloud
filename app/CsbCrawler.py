@@ -1,6 +1,7 @@
 # Extract CSB files
 
-from datetime import datetime
+from datetime import datetime, timezone
+import time
 import json
 import os
 import tarfile
@@ -9,6 +10,7 @@ from typing import Any, Union
 
 import yaml
 import app.spatialutil as spatialutil
+import hashlib
 
 
 class CsbCrawler:
@@ -16,6 +18,7 @@ class CsbCrawler:
     data_dir = ""
     bucket = ""
     test_data_dir = ""
+    manifest_file = ""
 
     enable_upload = False
     access_key = ""
@@ -120,7 +123,20 @@ class CsbCrawler:
                 self.recurse_dir(item_full_path)
             else:
                 if item[-7:] == ".tar.gz":
-                    print("%s - %s bytes" % (item_full_path, os.stat(item_full_path).st_size))
+                    # Get md5 checksum of file
+                    hash_md5 = hashlib.md5()
+                    with open(item_full_path, "rb") as f:
+                        for chunk in iter(lambda: f.read(4096), b""):
+                            hash_md5.update(chunk)
+                    md5sum = hash_md5.hexdigest()
+                    # Get file stats
+                    stat = os.stat(item_full_path)
+                    isodate = datetime.fromtimestamp(stat.st_mtime, timezone.utc).isoformat()
+                    fileinfo = "%s, %s bytes, %s, md5sum=%s" % (item_full_path, stat.st_size, isodate, md5sum)
+                    print(fileinfo)
+                    # Write manifest entry
+                    with open(self.manifest_file, "a") as mf:
+                        mf.write(fileinfo + "\n")
                     tar: Union[TarFile, Any] = tarfile.open(item_full_path, "r:gz")
                     metadata = self.extract_metadata(tar)
                     self.process_xyz_files(tar)
@@ -134,6 +150,7 @@ class CsbCrawler:
             self.output_dir    = docs["output_dir"]    if docs["output_dir"].startswith('/')    else (root_dir + '/' + docs["output_dir"])
             self.data_dir      = docs["data_dir"]      if docs["data_dir"].startswith('/')      else (root_dir + '/' + docs["data_dir"])
             self.test_data_dir = docs["test_data_dir"] if docs["test_data_dir"].startswith('/') else (root_dir + '/' + docs["test_data_dir"])
+            self.manifest_file = docs["manifest_file"] if docs["manifest_file"].startswith('/') else (root_dir + '/' + docs["manifest_file"])
             self.enable_upload = docs["enable_upload"]
             print("Uploads enabled: %s" % (self.enable_upload))
             self.bucket = docs["bucket"]
