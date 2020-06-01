@@ -4,6 +4,7 @@ from datetime import datetime, timezone
 import time
 import json
 import os
+import sys
 import tarfile
 from tarfile import TarFile
 from typing import Any, Union
@@ -151,6 +152,8 @@ class CsbCrawler:
             self.data_dir      = docs["data_dir"]      if docs["data_dir"].startswith('/')      else (root_dir + '/' + docs["data_dir"])
             self.test_data_dir = docs["test_data_dir"] if docs["test_data_dir"].startswith('/') else (root_dir + '/' + docs["test_data_dir"])
             self.manifest_file = docs["manifest_file"] if docs["manifest_file"].startswith('/') else (root_dir + '/' + docs["manifest_file"])
+            if os.path.exists(self.manifest_file):
+                sys.exit("Manifest file must not exist at start: " + self.manifest_file)
             self.enable_upload = docs["enable_upload"]
             print("Uploads enabled: %s" % (self.enable_upload))
             self.bucket = docs["bucket"]
