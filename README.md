@@ -25,6 +25,18 @@ Install all dependencies "[Packages]" from the Pipfile
 ```bash
 pipenv install
 ```
+If the above install does not work, try installing the the dependencies individually
+```bash
+pipenv install boto3
+pipenv install rtree
+pipenv install shapely
+pipenv install pyyaml
+pipenv install geopandas
+```
+Install spatialindex to support rtree dependency (use homebrew, pipenv didn't find it)
+```bash
+brew install spatialindex
+```
 Run app
 ```bash
 pipenv run python launch_app.py
