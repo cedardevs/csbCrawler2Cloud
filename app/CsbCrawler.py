@@ -66,7 +66,7 @@ class CsbCrawler:
                 obs_time = self.time_formatter(obs_time_str)
                 if (obs_time != None):
                     new_line = uuid + "," + tokens[0] + "," + tokens[1] + "," + tokens[2] + "," + obs_time
-                    print("Line {}: {}".format(cnt, new_line))
+                    #print("Line {}: {}".format(cnt, new_line))
                     new_xyz_file.write(new_line + "\n")
 
             cnt += 1
