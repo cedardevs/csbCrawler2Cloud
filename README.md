@@ -7,6 +7,7 @@ Assumes
 
 ### Libraries
  - Pipenv is used to manage external libraries
+ - brew install spatialindex (on Mac) is needed to support RTree
 
 ### Upload to AWS
  - Requires credentials.yaml
