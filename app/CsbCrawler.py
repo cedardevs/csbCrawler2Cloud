@@ -1,14 +1,17 @@
 # Extract CSB files
-import hashlib
+
 from datetime import datetime, timezone
+import time
 import json
 import os
+import sys
 import tarfile
 from tarfile import TarFile
 from typing import Any, Union
 
 import yaml
 import app.spatialutil as spatialutil
+import hashlib
 
 
 class CsbCrawler:
@@ -16,7 +19,9 @@ class CsbCrawler:
     data_dir = ""
     bucket = ""
     test_data_dir = ""
+    manifest_file = ""
 
+    enable_upload = False
     access_key = ""
     secret_key = ""
 
@@ -61,7 +66,7 @@ class CsbCrawler:
                 obs_time = self.time_formatter(obs_time_str)
                 if (obs_time != None):
                     new_line = uuid + "," + tokens[0] + "," + tokens[1] + "," + tokens[2] + "," + obs_time
-                    print("Line {}: {}".format(cnt, new_line))
+                    #print("Line {}: {}".format(cnt, new_line))
                     new_xyz_file.write(new_line + "\n")
 
             cnt += 1
@@ -140,15 +145,21 @@ class CsbCrawler:
 
     def __init__(self, root_dir):
         print("root_dir=" + root_dir)
-        with open(root_dir + "config/config.yaml") as f:
+        with open(root_dir + "/config/config.yaml") as f:
             docs = yaml.load(f, Loader=yaml.FullLoader)
-            self.output_dir = docs["output_dir"]
-            self.data_dir = docs["data_dir"]
-            self.test_data_dir = docs["test_data_dir"]
+            # Use config _dir values as-is if they are absolute (start with '/'), otherwise, they are relative to root_dir.
+            self.output_dir    = docs["output_dir"]    if docs["output_dir"].startswith('/')    else (root_dir + '/' + docs["output_dir"])
+            self.data_dir      = docs["data_dir"]      if docs["data_dir"].startswith('/')      else (root_dir + '/' + docs["data_dir"])
+            self.test_data_dir = docs["test_data_dir"] if docs["test_data_dir"].startswith('/') else (root_dir + '/' + docs["test_data_dir"])
+            self.manifest_file = docs["manifest_file"] if docs["manifest_file"].startswith('/') else (root_dir + '/' + docs["manifest_file"])
+            if os.path.exists(self.manifest_file):
+                sys.exit("Manifest file must not exist at start: " + self.manifest_file)
+            self.enable_upload = docs["enable_upload"]
+            print("Uploads enabled: %s" % (self.enable_upload))
             self.bucket = docs["bucket"]
 
         # Load credentials
-        with open(root_dir + "config/credentials.yaml") as f:
+        with open(root_dir + "/config/credentials.yaml") as f:
             secrets = yaml.load(f, Loader=yaml.FullLoader)
             self.access_key = secrets["ACCESS_KEY"]
             self.secret_key = secrets["SECRET_KEY"]
