@@ -11,7 +11,7 @@ Assumes
     - To confirm the current value
     ```bash
        $ printenv CSBCRAWLER
-       /Users/ktanaka/src/github/cedardevs/csbCrawler2Cloud
+       /Users/username/src/github/cedardevs/csbCrawler2Cloud
     ```
 
 ### Libraries
@@ -21,6 +21,12 @@ Verify python version 3.7+
 ```bash
 pipenv run python --version
 ```
+
+Install spatialindex (on Mac) to support RTree dependency (use homebrew, pipenv didn't find it)
+```bash
+brew install spatialindex
+```
+
 Install all dependencies "[Packages]" from the Pipfile
 ```bash
 pipenv install
@@ -33,10 +39,7 @@ pipenv install shapely
 pipenv install pyyaml
 pipenv install geopandas
 ```
-Install spatialindex (on Mac) to support RTree dependency (use homebrew, pipenv didn't find it)
-```bash
-brew install spatialindex
-```
+
 Run app
 ```bash
 pipenv run python launch_app.py
