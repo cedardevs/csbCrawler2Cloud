@@ -139,7 +139,7 @@ class CsbCrawler:
                     with open(self.manifest_file, "a") as mf:
                         mf.write(fileinfo + "\n")
                     tar: Union[TarFile, Any] = tarfile.open(item_full_path, "r:gz")
-                    metadata = self.extract_metadata(tar)
+                    self.extract_metadata(tar)
                     self.process_xyz_files(tar)
                     tar.close()
 
