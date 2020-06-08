@@ -135,13 +135,22 @@ class CsbCrawler:
                     isodate = datetime.fromtimestamp(stat.st_mtime, timezone.utc).isoformat()
                     fileinfo = "%s, %s bytes, %s, md5sum=%s" % (item_full_path, stat.st_size, isodate, md5sum)
                     print(fileinfo)
-                    # Write manifest entry
-                    with open(self.manifest_file, "a") as mf:
-                        mf.write(fileinfo + "\n")
-                    tar: Union[TarFile, Any] = tarfile.open(item_full_path, "r:gz")
-                    metadata = self.extract_metadata(tar)
-                    self.process_xyz_files(tar)
-                    tar.close()
+                    # Check for pre-existing entry
+                    pre_exist = False
+                    with open(self.manifest_file, "r+") as mfile_search:
+                        for line in mfile_search:
+                            line = line.rstrip()
+                            if fileinfo == line:
+                                print("Line already exists: " + line)
+                                pre_exist = True
+                    if not(pre_exist):
+                        # Write manifest entry
+                        with open(self.manifest_file, "a") as mfile:
+                            mfile.write(fileinfo + "\n")
+                        tar: Union[TarFile, Any] = tarfile.open(item_full_path, "r:gz")
+                        metadata = self.extract_metadata(tar)
+                        self.process_xyz_files(tar)
+                        tar.close()
 
     def __init__(self, root_dir):
         print("root_dir=" + root_dir)
@@ -152,8 +161,13 @@ class CsbCrawler:
             self.data_dir      = docs["data_dir"]      if docs["data_dir"].startswith('/')      else (root_dir + '/' + docs["data_dir"])
             self.test_data_dir = docs["test_data_dir"] if docs["test_data_dir"].startswith('/') else (root_dir + '/' + docs["test_data_dir"])
             self.manifest_file = docs["manifest_file"] if docs["manifest_file"].startswith('/') else (root_dir + '/' + docs["manifest_file"])
-            if os.path.exists(self.manifest_file):
+            try:
+                mfile = open(self.manifest_file, "x")
+            except FileExistsError:
                 sys.exit("Manifest file must not exist at start: " + self.manifest_file)
+            else:
+                # Close initialized manifest file
+                mfile.close()
             self.enable_upload = docs["enable_upload"]
             print("Uploads enabled: %s" % (self.enable_upload))
             self.bucket = docs["bucket"]
