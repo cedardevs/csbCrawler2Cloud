@@ -115,6 +115,13 @@ class CsbCrawler:
                     print("extracting... " + tar_info.name)
                     self.add_uuid_to_xyz(tar, tar_info)
 
+    def compute_md5sum(self, full_path):
+        hash_md5 = hashlib.md5()
+        with open(full_path, "rb") as f:
+            for chunk in iter(lambda: f.read(4096), b""):
+                hash_md5.update(chunk)
+        return hash_md5.hexdigest()
+
     # Print every file with its size recursing through dirs
     def recurse_dir(self, dir_path):
         for item in os.listdir(dir_path):
@@ -125,14 +132,11 @@ class CsbCrawler:
             else:
                 if item[-7:] == ".tar.gz":
                     # Get md5 checksum of file
-                    hash_md5 = hashlib.md5()
-                    with open(item_full_path, "rb") as f:
-                        for chunk in iter(lambda: f.read(4096), b""):
-                            hash_md5.update(chunk)
-                    md5sum = hash_md5.hexdigest()
+                    md5sum = self.compute_md5sum(item_full_path)
                     # Get file stats
                     stat = os.stat(item_full_path)
                     isodate = datetime.fromtimestamp(stat.st_mtime, timezone.utc).isoformat()
+
                     fileinfo = "%s, %s bytes, %s, md5sum=%s" % (item_full_path, stat.st_size, isodate, md5sum)
                     print(fileinfo)
                     # Check for pre-existing entry
