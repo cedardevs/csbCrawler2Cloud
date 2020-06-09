@@ -1,7 +1,6 @@
 # Extract CSB files
 
 from datetime import datetime, timezone
-import time
 import json
 import os
 import sys
@@ -10,7 +9,7 @@ from tarfile import TarFile
 from typing import Any, Union
 
 import yaml
-import app.spatialutil as spatialutil
+import app.spatialutil as spatial_util
 import hashlib
 
 
@@ -24,6 +23,8 @@ class CsbCrawler:
     enable_upload = False
     access_key = ""
     secret_key = ""
+
+    metadata = []
 
     @staticmethod
     def time_formatter(obs_time_str):
@@ -47,9 +48,9 @@ class CsbCrawler:
         uuid = file_name[9:41]
 
         print("Adding " + uuid + " to csv")
-        new_file_name = self.output_dir + "xyz/uuid_" + file_name[:-4] + ".csv"
+        new_file_name = self.output_dir + "working/" + file_name[:-4] + ".csv"
         new_xyz_file = open(new_file_name, "w+")
-        new_xyz_file.write("UUID,LAT,LON,DEPTH,TIME\n")
+        new_xyz_file.write("UUID,LAT,LON,DEPTH,TIME,PLATFORM_NAME,PROVIDER\n")
 
         # Skip header
         xyz_file.readline()
@@ -65,7 +66,7 @@ class CsbCrawler:
                 obs_time_str = tokens[3]
                 obs_time = self.time_formatter(obs_time_str)
                 if (obs_time != None):
-                    new_line = uuid + "," + tokens[0] + "," + tokens[1] + "," + tokens[2] + "," + obs_time
+                    new_line = uuid + "," + tokens[0] + "," + tokens[1] + "," + tokens[2] + "," + obs_time + "," + self.metadata["platform"]["name"] + "," + self.metadata["providerContactPoint"]["orgName"]
                     #print("Line {}: {}".format(cnt, new_line))
                     new_xyz_file.write(new_line + "\n")
 
@@ -74,25 +75,19 @@ class CsbCrawler:
         xyz_file.close()
         new_xyz_file.close()
         # Perform spatial join on new xyz file
-        pts_to_share = spatialutil.spatial_join(self, new_xyz_file.name)
+        pts_to_share = spatial_util.spatial_join(self, new_xyz_file.name)
 
         # Remove unnecessary columns
-        pts_to_share = pts_to_share[['UUID', 'LAT', 'LON', 'DEPTH', 'TIME']]
+        pts_to_share = pts_to_share[['UUID', 'LAT', 'LON', 'DEPTH', 'TIME', 'PLATFORM_NAME', 'PROVIDER']]
 
         # Write back out as a csv
-        pts_to_share.to_csv(self.data_dir + "reprocessed/xyz/" + file_name[:-4] + "_filtered.csv", index=False)
+        pts_to_share.to_csv(self.output_dir + "xyz/" + file_name[:-4] + "_filtered.csv", index=False)
 
     def parse_metadata(self, metadata_file):
         # Date is represented in filename YYYYMMDD
         file_name = os.path.basename(metadata_file.name)
         metadata = json.load(metadata_file)
-        metadata["uuid"] = file_name[9:41]
-        metadata["date"] = file_name[:8]
-        csv_file_name = file_name[:-7] + "_metadata.csv"
         print(metadata)
-        print("csv_file_name=" + csv_file_name)
-        # Write out combined metadata to CSV
-        self.write_metadata_to_csv(metadata, csv_file_name)
         return metadata
 
     # Extract file
@@ -114,6 +109,8 @@ class CsbCrawler:
                 if tar_info.name[-4:] == ".xyz":
                     print("extracting... " + tar_info.name)
                     self.add_uuid_to_xyz(tar, tar_info)
+
+
 
     # Print every file with its size recursing through dirs
     def recurse_dir(self, dir_path):
@@ -139,7 +136,7 @@ class CsbCrawler:
                     with open(self.manifest_file, "a") as mf:
                         mf.write(fileinfo + "\n")
                     tar: Union[TarFile, Any] = tarfile.open(item_full_path, "r:gz")
-                    self.extract_metadata(tar)
+                    self.metadata = self.extract_metadata(tar)
                     self.process_xyz_files(tar)
                     tar.close()
 
