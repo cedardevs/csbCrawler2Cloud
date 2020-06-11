@@ -35,53 +35,47 @@ class CsbCrawler:
             print("Invalid date format, skipping...")
             return None
 
-    def write_metadata_to_csv(self, metadata, csv_file_name):
-        csv_file = open(self.output_dir + "metadata/" + csv_file_name, "w")
-        csv_file.write("UUID,NAME,DATE,PROVIDER\n")
-        csv_file.write(metadata["uuid"] + "," + metadata["platform"]["name"] + "," + metadata["date"] + "," +
-                       metadata["providerContactPoint"]["orgName"])
-        csv_file.close()
-
-    def add_uuid_to_xyz(self, tar, tar_info):
-        xyz_file = tar.extractfile(tar_info)
+    def add_uuid_to_csv(self, tar, tar_info):
+        csv_file = tar.extractfile(tar_info)
         file_name = os.path.basename(tar_info.name)
         uuid = file_name[9:41]
 
         print("Adding " + uuid + " to csv")
         new_file_name = self.output_dir + "working/" + file_name[:-4] + ".csv"
-        new_xyz_file = open(new_file_name, "w+")
-        new_xyz_file.write("UUID,LAT,LON,DEPTH,TIME,PLATFORM_NAME,PROVIDER\n")
+        new_csv_file = open(new_file_name, "w+")
+        new_csv_file.write("UUID,LON,LAT,DEPTH,TIME,PLATFORM_NAME,PROVIDER\n")
 
         # Skip header
-        xyz_file.readline()
+        csv_file.readline()
         cnt = 1
 
-        # Loop through xyz_file and write info back out with uuid included.
-        for _ in xyz_file:
+        # Loop through csv_file and write info back out with uuid included.
+        for _ in csv_file:
             # TODO add more validation checks?
-            line = (xyz_file.readline()).decode("UTF-8").strip()
+            line = (csv_file.readline()).decode("UTF-8").strip()
             tokens = line.split(",")
 
             if len(tokens) == 4:
                 obs_time_str = tokens[3]
                 obs_time = self.time_formatter(obs_time_str)
                 if (obs_time != None):
-                    new_line = uuid + "," + tokens[0] + "," + tokens[1] + "," + tokens[2] + "," + obs_time + "," + self.metadata["platform"]["name"] + "," + self.metadata["providerContactPoint"]["orgName"]
+                    new_line = uuid + "," + tokens[1] + "," + tokens[0] + "," + tokens[2] + "," + obs_time + "," + self.metadata["platform"]["name"] + "," + self.metadata["providerContactPoint"]["orgName"]
                     #print("Line {}: {}".format(cnt, new_line))
-                    new_xyz_file.write(new_line + "\n")
+                    new_csv_file.write(new_line + "\n")
 
             cnt += 1
 
-        xyz_file.close()
-        new_xyz_file.close()
-        # Perform spatial join on new xyz file
-        pts_to_share = spatial_util.spatial_join(self, new_xyz_file.name)
+        csv_file.close()
+        new_csv_file.close()
+        # Perform spatial join on new csv file
+        pts_to_share = spatial_util.spatial_join(self, new_csv_file.name)
 
-        # Remove unnecessary columns
-        pts_to_share = pts_to_share[['UUID', 'LAT', 'LON', 'DEPTH', 'TIME', 'PLATFORM_NAME', 'PROVIDER']]
+        if pts_to_share is not None:
+            # Remove unnecessary columns
+            pts_to_share = pts_to_share[['UUID', 'LON', 'LAT', 'DEPTH', 'TIME', 'PLATFORM_NAME', 'PROVIDER']]
 
-        # Write back out as a csv
-        pts_to_share.to_csv(self.output_dir + "xyz/" + file_name[:-4] + "_filtered.csv", index=False)
+            # Write back out as a csv
+            pts_to_share.to_csv(self.output_dir + "csv/" + file_name[:-4] + "_filtered.csv", index=False)
 
     def parse_metadata(self, metadata_file):
         # Date is represented in filename YYYYMMDD
@@ -102,13 +96,13 @@ class CsbCrawler:
 
         return metadata
 
-    def process_xyz_files(self, tar):
+    def process_csv_files(self, tar):
         for tar_info in tar:
 
             if tar_info.isreg() and (tar_info.name[-4:] == ".xyz"):
                 if tar_info.name[-4:] == ".xyz":
                     print("extracting... " + tar_info.name)
-                    self.add_uuid_to_xyz(tar, tar_info)
+                    self.add_uuid_to_csv(tar, tar_info)
 
 
 
@@ -137,7 +131,7 @@ class CsbCrawler:
                         mf.write(fileinfo + "\n")
                     tar: Union[TarFile, Any] = tarfile.open(item_full_path, "r:gz")
                     self.metadata = self.extract_metadata(tar)
-                    self.process_xyz_files(tar)
+                    self.process_csv_files(tar)
                     tar.close()
 
     def __init__(self, root_dir):
