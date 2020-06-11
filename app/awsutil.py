@@ -19,7 +19,8 @@ def upload_files_to_aws(crawler, sub_dir):
     print("output_dir=" + crawler.output_dir)
     upload_dir = crawler.output_dir + sub_dir
     for item in os.listdir(upload_dir):
+        key = item[0:4] + "/" + item[4:6] + "/" + item[6:8] + "/" + item
         item_full_path = os.path.join(upload_dir, item)
-        item_relative_path = sub_dir + item
-        print(item_full_path + "; " + item_relative_path)
+        item_relative_path = sub_dir + key
+        print("key=" + item_relative_path)
         upload_to_aws(crawler, item_full_path, crawler.bucket, item_relative_path)
