@@ -45,17 +45,17 @@ class csbCrawlerTest(unittest.TestCase):
 
     def test_spatial_join(self):
         file_name = "subset.xyz"
-        points_file_path = self.csbCrawler.test_data_dir + "reprocessed/xyz/" + file_name
+        points_file_path = self.csbCrawler.output_dir + "xyz/" + file_name
 
         spatial_join = spatialutil.spatial_join(self.csbCrawler, points_file_path)
 
         # Restrict based on EXCLUDE column values
         pts_to_share = spatial_join[spatial_join['EXCLUDE'] != "Y"]
         new_file_name = file_name[:-4] + "_exc.xyz"
-        if os.path.exists(self.csbCrawler.test_data_dir + "reprocessed/xyz/" + new_file_name):
-            os.remove(self.csbCrawler.test_data_dir + "reprocessed/xyz/" + new_file_name)
+        if os.path.exists(self.csbCrawler.output_dir + "xyz/" + new_file_name):
+            os.remove(self.csbCrawler.output_dir + "xyz/" + new_file_name)
 
         # Remove unnecessary columns
         pts_to_share = pts_to_share[['UUID', 'LAT', 'LON', 'DEPTH', 'TIME']]
 
-        pts_to_share.to_csv(self.csbCrawler.test_data_dir + "reprocessed/xyz/" + new_file_name, index=False)
+        pts_to_share.to_csv(self.csbCrawler.output_dir + "xyz/" + new_file_name, index=False)

@@ -18,7 +18,8 @@ class CsbCrawler:
     data_dir = ""
     bucket = ""
     test_data_dir = ""
-    manifest_file = ""
+    manifest_dir = ""
+    manifest_file = "manifest.txt"
 
     enable_upload = False
     access_key = ""
@@ -110,7 +111,32 @@ class CsbCrawler:
                     print("extracting... " + tar_info.name)
                     self.add_uuid_to_xyz(tar, tar_info)
 
+    def compute_md5sum(self, full_path):
+        hash_md5 = hashlib.md5()
+        with open(full_path, "rb") as f:
+            for chunk in iter(lambda: f.read(4096), b""):
+                hash_md5.update(chunk)
+        return hash_md5.hexdigest()
 
+    def full_manifest_path(self, full_manifest_dir):
+        return os.path.join(full_manifest_dir, self.manifest_file)
+
+    def find_in_manifest(self, full_manifest_dir, file_match_string):
+        pre_existing_item = False
+        # make full_manifest_dir, then make manifest file if not present
+        os.makedirs(full_manifest_dir, exist_ok=True)
+        manifest_path = self.full_manifest_path(full_manifest_dir)
+        # print("full_manifest_path='%s'" % full_manifest_path)
+        if os.path.exists(manifest_path):
+            # print("...manifest exists - search")
+            with open(manifest_path, "r") as mfile:
+                for line in mfile:
+                    line = line.rstrip()
+                    if line.startswith(file_match_string):
+                        # print("Line already exists: " + line)
+                        pre_existing_item = True
+                        break
+        return pre_existing_item
 
     # Print every file with its size recursing through dirs
     def recurse_dir(self, dir_path):
@@ -122,35 +148,49 @@ class CsbCrawler:
             else:
                 if item[-7:] == ".tar.gz":
                     # Get md5 checksum of file
-                    hash_md5 = hashlib.md5()
-                    with open(item_full_path, "rb") as f:
-                        for chunk in iter(lambda: f.read(4096), b""):
-                            hash_md5.update(chunk)
-                    md5sum = hash_md5.hexdigest()
+                    md5sum = self.compute_md5sum(item_full_path)
                     # Get file stats
                     stat = os.stat(item_full_path)
                     isodate = datetime.fromtimestamp(stat.st_mtime, timezone.utc).isoformat()
-                    fileinfo = "%s, %s bytes, %s, md5sum=%s" % (item_full_path, stat.st_size, isodate, md5sum)
+
+                    # fileinfo will be recorded in the manifest file
+                    fileinfo = "%s, %s, %s, %s" % (item_full_path, md5sum, stat.st_size, isodate)
+                    # Use file_match_string since we don't use the full fileinfo for identifying a match
+                    file_match_string = "%s, %s," % (item_full_path, md5sum)
+
+                    # pathName, md5sum, size, lastModDate
                     print(fileinfo)
-                    # Write manifest entry
-                    with open(self.manifest_file, "a") as mf:
-                        mf.write(fileinfo + "\n")
-                    tar: Union[TarFile, Any] = tarfile.open(item_full_path, "r:gz")
-                    self.metadata = self.extract_metadata(tar)
-                    self.process_xyz_files(tar)
-                    tar.close()
+                    # Check for pre-existing entry
+                    pre_existing_item = False
+                    # dir_path replaces previous args if absolute, so strip leading '/'
+                    full_manifest_dir = os.path.join(self.manifest_dir, dir_path.lstrip("/"))
+                    #print("full_manifest_dir ='%s'" % full_manifest_dir)
+
+                    pre_existing_item = self.find_in_manifest(full_manifest_dir, file_match_string)
+                    if not(pre_existing_item):
+                        # Write manifest entry
+                        manifest_path = self.full_manifest_path(full_manifest_dir)
+                        with open(manifest_path, "a") as mfile:
+                            mfile.write(fileinfo + "\n")
+                        tar: Union[TarFile, Any] = tarfile.open(item_full_path, "r:gz")
+                        self.metadata = self.extract_metadata(tar)
+                        self.process_xyz_files(tar)
+                        tar.close()
 
     def __init__(self, root_dir):
         print("root_dir=" + root_dir)
         with open(root_dir + "/config/config.yaml") as f:
             docs = yaml.load(f, Loader=yaml.FullLoader)
             # Use config _dir values as-is if they are absolute (start with '/'), otherwise, they are relative to root_dir.
-            self.output_dir    = docs["output_dir"]    if docs["output_dir"].startswith('/')    else (root_dir + '/' + docs["output_dir"])
-            self.data_dir      = docs["data_dir"]      if docs["data_dir"].startswith('/')      else (root_dir + '/' + docs["data_dir"])
-            self.test_data_dir = docs["test_data_dir"] if docs["test_data_dir"].startswith('/') else (root_dir + '/' + docs["test_data_dir"])
-            self.manifest_file = docs["manifest_file"] if docs["manifest_file"].startswith('/') else (root_dir + '/' + docs["manifest_file"])
-            if os.path.exists(self.manifest_file):
-                sys.exit("Manifest file must not exist at start: " + self.manifest_file)
+            self.output_dir    = docs["output_dir"]    if docs["output_dir"].startswith('/')    else os.path.join(root_dir, docs["output_dir"])
+            self.data_dir      = docs["data_dir"]      if docs["data_dir"].startswith('/')      else os.path.join(root_dir, docs["data_dir"])
+            self.test_data_dir = docs["test_data_dir"] if docs["test_data_dir"].startswith('/') else os.path.join(root_dir, docs["test_data_dir"])
+            self.manifest_dir  = docs["manifest_dir"]  if docs["manifest_dir"].startswith('/')  else os.path.join(root_dir, docs["manifest_dir"])
+            try:
+                os.makedirs(self.manifest_dir, exist_ok = True)
+                print("Top of manifest directory hierarchy is '%s'" % self.manifest_dir)
+            except OSError as error:
+                sys.exit("Manifest directory error: " + self.manifest_dir)
             self.enable_upload = docs["enable_upload"]
             print("Uploads enabled: %s" % (self.enable_upload))
             self.bucket = docs["bucket"]
