@@ -50,7 +50,7 @@ class CsbCrawler:
         print("Adding " + uuid + " to csv")
         new_file_name = self.output_dir + "working/" + file_name[:-4] + ".csv"
         new_xyz_file = open(new_file_name, "w+")
-        new_xyz_file.write("UUID,LAT,LON,DEPTH,TIME,PLATFORM_NAME,PROVIDER\n")
+        new_xyz_file.write("UUID,LON,LAT,DEPTH,TIME,PLATFORM_NAME,PROVIDER\n")
 
         # Skip header
         xyz_file.readline()
@@ -66,7 +66,7 @@ class CsbCrawler:
                 obs_time_str = tokens[3]
                 obs_time = self.time_formatter(obs_time_str)
                 if (obs_time != None):
-                    new_line = uuid + "," + tokens[0] + "," + tokens[1] + "," + tokens[2] + "," + obs_time + "," + self.metadata["platform"]["name"] + "," + self.metadata["providerContactPoint"]["orgName"]
+                    new_line = uuid + "," + tokens[1] + "," + tokens[0] + "," + tokens[2] + "," + obs_time + "," + self.metadata["platform"]["name"] + "," + self.metadata["providerContactPoint"]["orgName"]
                     #print("Line {}: {}".format(cnt, new_line))
                     new_xyz_file.write(new_line + "\n")
 
@@ -78,10 +78,10 @@ class CsbCrawler:
         pts_to_share = spatial_util.spatial_join(self, new_xyz_file.name)
 
         # Remove unnecessary columns
-        pts_to_share = pts_to_share[['UUID', 'LAT', 'LON', 'DEPTH', 'TIME', 'PLATFORM_NAME', 'PROVIDER']]
+        pts_to_share = pts_to_share[['UUID', 'LON', 'LAT', 'DEPTH', 'TIME', 'PLATFORM_NAME', 'PROVIDER']]
 
         # Write back out as a csv
-        pts_to_share.to_csv(self.output_dir + "xyz/" + file_name[:-4] + "_filtered.csv", index=False)
+        pts_to_share.to_csv(self.output_dir + "csv/" + file_name[0:-4] + ".csv", index=False)
 
     def parse_metadata(self, metadata_file):
         # Date is represented in filename YYYYMMDD
