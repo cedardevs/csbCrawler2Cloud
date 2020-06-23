@@ -11,7 +11,7 @@ Assumes
     - To confirm the current value
     ```bash
        $ printenv CSBCRAWLER
-       /Users/ktanaka/src/github/cedardevs/csbCrawler2Cloud
+       /Users/username/src/github/cedardevs/csbCrawler2Cloud
     ```
 
 ### Libraries
