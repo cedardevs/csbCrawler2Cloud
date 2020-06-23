@@ -17,7 +17,7 @@ def spatial_join(csb_crawler, pts_file):
     data_gdf = gpd.read_file(poly_file)
 
     # Remove dups and spatially enable points
-    df.drop_duplicates(['UUID', 'LON', 'LAT', 'DEPTH'], inplace=True)
+    df.drop_duplicates(['UUID', 'LON', 'LAT', 'DEPTH','PLATFORM_NAME','PROVIDER'], inplace=True)
     geometry = [geom.Point(xy) for xy in zip(df.LON, df.LAT)]
     crs = "epsg:4326"  # http://www.spatialreference.org/ref/epsg/4326/
     points_gdf = gpd.GeoDataFrame(df, crs=crs, geometry=geometry)

@@ -1,7 +1,6 @@
 # Extract CSB files
 
 from datetime import datetime, timezone
-import time
 import json
 import os
 import sys
@@ -25,6 +24,8 @@ class CsbCrawler:
     enable_upload = False
     access_key = ""
     secret_key = ""
+
+    metadata = []
 
     @staticmethod
     def time_formatter(obs_time_str):

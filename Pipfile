@@ -11,6 +11,7 @@ rtree = "*"
 shapely = "*"
 pyyaml = "~=5.1.2"
 geopandas = "*"
+pandas = "*"
 
 [requires]
 python_version = "3.7"

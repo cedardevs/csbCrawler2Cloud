@@ -21,6 +21,12 @@ Verify python version 3.7+
 ```bash
 pipenv run python --version
 ```
+
+Install spatialindex (on Mac) to support RTree dependency (use homebrew, pipenv didn't find it)
+```bash
+brew install spatialindex
+```
+
 Install all dependencies "[Packages]" from the Pipfile
 ```bash
 pipenv install
