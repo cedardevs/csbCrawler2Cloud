@@ -39,10 +39,7 @@ pipenv install shapely
 pipenv install pyyaml
 pipenv install geopandas
 ```
-Install spatialindex (on Mac) to support RTree dependency (use homebrew, pipenv didn't find it)
-```bash
-brew install spatialindex
-```
+
 Run app
 ```bash
 pipenv run python launch_app.py
