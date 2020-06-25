@@ -13,7 +13,7 @@ if csbCrawler.enable_upload:
 
   # Upload csv
   print("Uploading csv")
-  awsutil.upload_files_to_aws(csbCrawler, "csv/")
+  awsutil.upload_files_to_aws(csbCrawler, "csv/", False)
 
 
 
