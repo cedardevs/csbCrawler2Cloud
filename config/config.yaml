@@ -3,5 +3,5 @@ data_dir: data/
 test_data_dir: data/
 output_dir: data/reprocessed/
 manifest_file: manifest
-enable_upload: false
-bucket: "odp-noaa-nesdis-ncei-test"
+enable_upload: true
+bucket: "odp-noaa-nesdis-ncei-csb"
