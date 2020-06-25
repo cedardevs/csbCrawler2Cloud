@@ -1,0 +1,49 @@
+/* fonts */
+
+@font-face {
+    font-family: 'AmazonEmberLight';
+    src: url('https://assets.awsopendata.com/fonts/amazon-ember/AmazonEmber_W_Lt.woff2') format('woff2'), url('https://assets.awsopendata.com/fonts/amazon-ember/AmazonEmber_W_Lt.woff') format('woff');
+    font-weight: normal;
+    font-style: normal
+}
+
+@font-face {
+    font-family: 'AmazonEmber';
+    src: url('https://assets.awsopendata.com/fonts/amazon-ember/AmazonEmber_W_Rg.woff2') format('woff2'), url('https://assets.awsopendata.com/fonts/amazon-ember/AmazonEmber_W_Rg.woff') format('woff');
+    font-weight: normal;
+    font-style: normal
+}
+
+@font-face {
+    font-family: 'AmazonEmberBold';
+    src: url('https://assets.awsopendata.com/fonts/amazon-ember/AmazonEmber_W_Bd.woff2') format('woff2'), url('https://assets.awsopendata.com/fonts/amazon-ember/AmazonEmber_W_Bd.woff') format('woff');
+    font-weight: normal;
+    font-style: normal
+}
+
+/* overall */
+
+body {
+  font-family: AmazonEmber, Helvetica Neue, Helvetica, Arial, sans-serif;
+}
+
+/* links*/
+
+a { color:#007dbc; }
+
+a:hover {
+  text-decoration: underline;
+  color: #eb5f07;
+}
+
+.header h3 a {
+  color:#FFF;
+}
+
+.header h3 a:hover {
+  text-decoration: underline;
+}
+
+footer {
+  margin:50px 0 40px 0;
+}

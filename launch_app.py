@@ -11,9 +11,9 @@ csbCrawler.recurse_dir(csbCrawler.data_dir)
 
 if csbCrawler.enable_upload:
 
-  # Upload xyz
+  # Upload csv
   print("Uploading csv")
-  awsutil.upload_files_to_aws(csbCrawler, "csv/")
+  awsutil.upload_files_to_aws(csbCrawler, "csv/", False)
 
 
 
