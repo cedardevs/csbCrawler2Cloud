@@ -3,6 +3,7 @@ data_dir: data/
 test_data_dir: data/
 output_dir: data/reprocessed/
 manifest_file: manifest
-manifest_dir: manifestdir/
+manifest_dir: /Users/dneufeld/data/CSB/manifestdir/
 enable_upload: true
+overwrite_s3: false
 bucket: "odp-noaa-nesdis-ncei-csb"

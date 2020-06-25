@@ -22,6 +22,7 @@ class CsbCrawler:
     manifest_file = "manifest.txt"
 
     enable_upload = False
+    overwrite_s3 = False
     access_key = ""
     secret_key = ""
 
@@ -187,6 +188,8 @@ class CsbCrawler:
                 sys.exit("Manifest directory error: " + self.manifest_dir)
             self.enable_upload = docs["enable_upload"]
             print("Uploads enabled: %s" % (self.enable_upload))
+            self.overwrite_s3 = docs["overwrite_s3"]
+            print("Overwrite enabled: %s" % (self.overwrite_s3))
             self.bucket = docs["bucket"]
 
         # Load credentials

@@ -3,15 +3,20 @@ import boto3
 import botocore
 
 
-def objectkey_exists(bucket, s3_file):
+def objectkey_exists(s3, bucket, s3_file):
+    exists = True
     try:
-        s3_resource = boto3.resource('s3')
-        s3_resource.Object(bucket, s3_file).load()
+        s3 = boto3.resource('s3')
+        object = s3.Object('odp-noaa-nesdis-ncei-csb', s3_file)
+        print("load object")
+        object.load()
     except botocore.exceptions.ClientError as e:
-        if e.response['Error']['Code'] == "404":
-            return False
-        else:
-            return True
+        # If a client error is thrown, then check that it was a 404 error.
+        # If it was a 404 error, then the bucket does not exist.
+        error_code = e.response['Error']['Code']
+        if error_code == '404':
+            exists = False
+    return exists
 
 
 def upload_to_aws(crawler, local_file, bucket, s3_file, overwrite):
@@ -19,6 +24,7 @@ def upload_to_aws(crawler, local_file, bucket, s3_file, overwrite):
                       aws_secret_access_key=crawler.secret_key)
 
     key_exists = objectkey_exists(s3, bucket, s3_file)
+
     if not key_exists or (key_exists and overwrite):
         try:
             s3.upload_file(local_file, bucket, s3_file)
