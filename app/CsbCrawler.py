@@ -43,8 +43,8 @@ class CsbCrawler:
 
         print("Adding " + uuid + " to csv")
         new_file_name = self.output_dir + "working/" + file_name[:-4] + ".csv"
-        new_xyz_file = open(new_file_name, "w+")
-        new_xyz_file.write("UUID,LON,LAT,DEPTH,TIME,PLATFORM_NAME,PROVIDER\n")
+        new_csv_file = open(new_file_name, "w+")
+        new_csv_file.write("UUID,LON,LAT,DEPTH,TIME,PLATFORM_NAME,PROVIDER\n")
 
         # Skip header
         csv_file.readline()
@@ -168,7 +168,7 @@ class CsbCrawler:
                             mfile.write(fileinfo + "\n")
                         tar: Union[TarFile, Any] = tarfile.open(item_full_path, "r:gz")
                         self.metadata = self.extract_metadata(tar)
-                        self.process_xyz_files(tar)
+                        self.process_csv_files(tar)
                         tar.close()
 
     def __init__(self, root_dir):

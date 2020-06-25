@@ -3,9 +3,10 @@ import boto3
 import botocore
 
 
-def objectkey_exists(s3, bucket, s3_file):
+def objectkey_exists(bucket, s3_file):
     try:
-        s3.Object(bucket, s3_file).load()
+        s3_resource = boto3.resource('s3')
+        s3_resource.Object(bucket, s3_file).load()
     except botocore.exceptions.ClientError as e:
         if e.response['Error']['Code'] == "404":
             return False
