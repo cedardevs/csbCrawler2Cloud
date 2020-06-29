@@ -22,10 +22,12 @@ def objectkey_exists(s3, bucket, s3_file):
 def upload_to_aws(crawler, local_file, bucket, s3_file, overwrite):
     s3 = boto3.client('s3', aws_access_key_id=crawler.access_key,
                       aws_secret_access_key=crawler.secret_key)
+    key_exists = False
 
-    key_exists = objectkey_exists(s3, bucket, s3_file)
+    if not overwrite:
+        key_exists = objectkey_exists(s3, bucket, s3_file)
 
-    if not key_exists or (key_exists and overwrite):
+    if (not key_exists) or (key_exists and overwrite):
         try:
             s3.upload_file(local_file, bucket, s3_file)
             print("Upload Successful")
