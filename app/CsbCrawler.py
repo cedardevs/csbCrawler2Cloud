@@ -1,6 +1,7 @@
 # Extract CSB files
 
 from datetime import datetime, timezone
+import itertools
 import json
 import os
 import sys
@@ -36,12 +37,33 @@ class CsbCrawler:
             print("Invalid date format, skipping...")
             return None
 
+    # Scan through json_meta for values with the key of search_key
+    def find_values(self, search_key, json_meta):
+        results = []
+        if type(json_meta) == str:
+            json_meta = json.loads(json_meta)
+        if type(json_meta) is dict:
+            for jsonkey in json_meta:
+                if type(json_meta[jsonkey]) in (list, dict):
+                    results.append(self.find_values(search_key, json_meta[jsonkey]))
+                elif jsonkey == search_key:
+                    #print( "Found " + id + " with value '" + json_meta[jsonkey] + "'")
+                    results.append(json_meta[jsonkey])
+        elif type(json_meta) is list:
+            for item in json_meta:
+                if type(item) in (list, dict):
+                    results.append(self.find_values(search_key, item))
+        return results
+
     def add_uuid_to_csv(self, tar, tar_info):
         csv_file = tar.extractfile(tar_info)
         file_name = os.path.basename(tar_info.name)
-        uuid = file_name[9:41]
+        # get unique_id, flattening the list if there are multiple results
+        unique_ids = list(itertools.chain(*self.find_values('uniqueID', self.metadata)))
+        unique_id = unique_ids[0]
+        #print("uniqueID from metadata='" + unique_id + "'")
 
-        print("Adding " + uuid + " to csv")
+        print("Adding " + unique_id + " to csv")
         new_file_name = self.output_dir + "working/" + file_name[:-4] + ".csv"
         new_xyz_file = open(new_file_name, "w+")
         new_xyz_file.write("UUID,LON,LAT,DEPTH,TIME,PLATFORM_NAME,PROVIDER\n")
@@ -50,7 +72,7 @@ class CsbCrawler:
         csv_file.readline()
         cnt = 1
 
-        # Loop through csv_file and write info back out with uuid included.
+        # Loop through csv_file and write info back out with unique_id included.
         for _ in csv_file:
             # TODO add more validation checks?
             line = (csv_file.readline()).decode("UTF-8").strip()
@@ -60,8 +82,8 @@ class CsbCrawler:
                 obs_time_str = tokens[3]
                 obs_time = self.time_formatter(obs_time_str)
                 if (obs_time != None):
-                    new_line = uuid + "," + tokens[1] + "," + tokens[0] + "," + tokens[2] + "," + obs_time + "," + self.metadata["platform"]["name"] + "," + self.metadata["providerContactPoint"]["orgName"]
-                    #print("Line {}: {}".format(cnt, new_line))
+                    new_line = unique_id + "," + tokens[1] + "," + tokens[0] + "," + tokens[2] + "," + obs_time + "," + self.metadata["platform"]["name"] + "," + self.metadata["providerContactPoint"]["orgName"]
+                    print("Line {}: {}".format(cnt, new_line))
                     new_csv_file.write(new_line + "\n")
 
             cnt += 1
@@ -168,7 +190,7 @@ class CsbCrawler:
                             mfile.write(fileinfo + "\n")
                         tar: Union[TarFile, Any] = tarfile.open(item_full_path, "r:gz")
                         self.metadata = self.extract_metadata(tar)
-                        self.process_xyz_files(tar)
+                        self.process_csv_files(tar)
                         tar.close()
 
     def __init__(self, root_dir):
