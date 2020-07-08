@@ -84,7 +84,7 @@ class CsbCrawler:
                 obs_time = self.time_formatter(obs_time_str)
                 if (obs_time != None):
                     new_line = unique_id + "," + tokens[1] + "," + tokens[0] + "," + tokens[2] + "," + obs_time + "," + self.metadata["platform"]["name"] + "," + self.metadata["providerContactPoint"]["orgName"]
-                    print("Line {}: {}".format(cnt, new_line))
+                    #print("Line {}: {}".format(cnt, new_line))
                     new_csv_file.write(new_line + "\n")
 
             cnt += 1
