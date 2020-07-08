@@ -1,8 +1,9 @@
 # _dirs should end in '/'. Relative dirs are relative to the CSBCRAWLER environment variable.
-data_dir: data/
-test_data_dir: data/
+data_dir: /Users/username/data/CSB/ROSEP
+test_data_dir: data/input/
 output_dir: data/reprocessed/
 manifest_file: manifest
-manifest_dir: manifestdir/
+manifest_dir: /Users/username/data/CSB/manifestdir/
 enable_upload: true
+overwrite_s3: false
 bucket: "odp-noaa-nesdis-ncei-csb"

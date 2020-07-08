@@ -23,6 +23,7 @@ class CsbCrawler:
     manifest_file = "manifest.txt"
 
     enable_upload = False
+    overwrite_s3 = False
     access_key = ""
     secret_key = ""
 
@@ -65,8 +66,8 @@ class CsbCrawler:
 
         print("Adding " + unique_id + " to csv")
         new_file_name = self.output_dir + "working/" + file_name[:-4] + ".csv"
-        new_xyz_file = open(new_file_name, "w+")
-        new_xyz_file.write("UUID,LON,LAT,DEPTH,TIME,PLATFORM_NAME,PROVIDER\n")
+        new_csv_file = open(new_file_name, "w+")
+        new_csv_file.write("UUID,LON,LAT,DEPTH,TIME,PLATFORM_NAME,PROVIDER\n")
 
         # Skip header
         csv_file.readline()
@@ -91,14 +92,18 @@ class CsbCrawler:
         csv_file.close()
         new_csv_file.close()
         # Perform spatial join on new csv file
-        pts_to_share = spatial_util.spatial_join(self, new_csv_file.name)
+        join = spatial_util.spatial_join(self, new_csv_file.name)
 
-        if pts_to_share is not None:
+        if join is not None:
+
             # Remove unnecessary columns
-            pts_to_share = pts_to_share[['UUID', 'LON', 'LAT', 'DEPTH', 'TIME', 'PLATFORM_NAME', 'PROVIDER']]
+            pts_to_share = join[join['EXCLUDE'] != "Y"]
+            pts_to_share = pts_to_share[['UUID', 'LON', 'LAT', 'DEPTH', 'TIME', 'PLATFORM_NAME', 'PROVIDER','EXCLUDE']]
 
             # Write back out as a csv
-            pts_to_share.to_csv(self.output_dir + "csv/" + file_name[0:-4] + ".csv", index=False)
+            print(pts_to_share['EXCLUDE'].count())
+            if pts_to_share['EXCLUDE'].count() > 0:
+                pts_to_share.to_csv(self.output_dir + "csv/" + file_name[0:-4] + ".csv", index=False)
 
     def parse_metadata(self, metadata_file):
         # Date is represented in filename YYYYMMDD
@@ -209,6 +214,8 @@ class CsbCrawler:
                 sys.exit("Manifest directory error: " + self.manifest_dir)
             self.enable_upload = docs["enable_upload"]
             print("Uploads enabled: %s" % (self.enable_upload))
+            self.overwrite_s3 = docs["overwrite_s3"]
+            print("Overwrite enabled: %s" % (self.overwrite_s3))
             self.bucket = docs["bucket"]
 
         # Load credentials
