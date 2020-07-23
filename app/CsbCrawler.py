@@ -11,6 +11,7 @@ from typing import Any, Union
 
 import yaml
 import app.spatialutil as spatial_util
+import app.headerutil as header_util
 import hashlib
 
 
@@ -32,7 +33,7 @@ class CsbCrawler:
     @staticmethod
     def time_formatter(obs_time_str):
         try:
-            obs_time = datetime.strptime(obs_time_str, '%Y%m%dT%H%M%SZ')
+            obs_time = datetime.strptime(obs_time_str, '%Y%m%dT%H%M%SZ') #todo dateutil.parser.parse(datestring) is recommended
             return obs_time.isoformat("T", timespec="seconds")
         except ValueError as ve:
             print("Invalid date format, skipping...")
@@ -69,6 +70,8 @@ class CsbCrawler:
         new_csv_file = open(new_file_name, "w+")
         new_csv_file.write("UUID,LON,LAT,DEPTH,TIME,PLATFORM_NAME,PROVIDER\n")
 
+        # Gather header_map from csv_file to handle multiple formats
+        header_map, first_data_line = header_util.get_xyz_header_map_and_data_line_number(tar_info.name)
         # Skip header
         csv_file.readline()
         cnt = 1
