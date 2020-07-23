@@ -72,8 +72,13 @@ def get_xyz_header_map_and_data_line_number(csv_filename):
 
 
 class Error(Exception):
-    """Base class for exceptions in this module."""
-    pass
+    """Base class for exceptions in this module.
+
+    Attributes:
+        message -- explanation of the error
+    """
+    def __init__(self, message):
+        self.message = message
 
 class IncorrectHeaderError(Error):
     """Exception raised if csv file header does not match time field
@@ -81,8 +86,6 @@ class IncorrectHeaderError(Error):
     Attributes:
         message -- explanation of the error
     """
-    def __init__(self, message):
-        self.message = message
 
 class MissingHeaderError(Error):
     """Exception raised if csv file lacks a header
@@ -90,8 +93,6 @@ class MissingHeaderError(Error):
     Attributes:
         message -- explanation of the error
     """
-    def __init__(self, message):
-        self.message = message
 
 class MissingDataError(Error):
     """Exception raised if csv file does not have data near the start of the file
@@ -99,5 +100,3 @@ class MissingDataError(Error):
     Attributes:
         message -- explanation of the error
     """
-    def __init__(self, message):
-        self.message = message

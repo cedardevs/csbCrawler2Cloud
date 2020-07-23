@@ -15,9 +15,11 @@ for fn in data_filenames:
         header_map, first_data_line = header_util.get_xyz_header_map_and_data_line_number(fn)
         print("    header_map=" + str(header_map))
         print("    first_data_line=%d" % first_data_line)
+    # except header_util.Error as err:
+    #     print("Error>> " + err.message)
     except header_util.IncorrectHeaderError as err:
-        print("Error " + err.message)
+        print("IncorrectHeaderError>> " + err.message)
     except header_util.MissingHeaderError as err:
-        print("Error " + err.message)
+        print("MissingHeaderError>> " + err.message)
     except header_util.MissingDataError as err:
-        print("Error " + err.message)
+        print("MissingDataError>> " + err.message)
