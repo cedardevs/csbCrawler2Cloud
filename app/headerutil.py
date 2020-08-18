@@ -25,6 +25,7 @@ def get_xyz_header_map_and_data_line_number(csv_filename):
     header_line = ''
     max_xyz_lines_to_scan = 10
     line_index = 0
+    print("csv_filename " + csv_filename)
     with open(csv_filename, "r") as csv_file:
         for line in csv_file:
             if line_index >= max_xyz_lines_to_scan or first_data_line >= 0:
@@ -63,7 +64,7 @@ def get_xyz_header_map_and_data_line_number(csv_filename):
                                     raise IncorrectHeaderError(f"Header and default header did not match the time column in file '{csv_filename}'")
             line_index += 1
     #print("...result=")
-    #print([header_map, first_data_line])
+    print([header_map, first_data_line])
     if not 'lat' in header_map:
         raise MissingHeaderError(f"No header found at the beginning of '{csv_filename}'")
     if first_data_line < 0:

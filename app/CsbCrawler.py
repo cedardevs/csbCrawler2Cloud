@@ -59,6 +59,30 @@ class CsbCrawler:
 
     def add_uuid_to_csv(self, tar, tar_info):
         csv_file = tar.extractfile(tar_info)
+        print(f"csv_file='{csv_file}', type(csv_file)={type(csv_file)}")
+
+        tf = tarfile.open(tar.name)
+        print("tarfile contents:", tf.getnames())
+
+        work_dir = self.output_dir + "working/"
+        tar.extract(tar_info, work_dir)
+        working_file = work_dir + os.path.basename(tar_info.name)
+        print(f"working_file='{working_file}', type={type(working_file)}")
+
+        #tar_item_name = self.data_dir + "input/" + os.path.basename(tar_info.name)
+        #print(f"tar_item_name='{tar_item_name}', type={type(tar_item_name)}")
+        #print(f"type(tar_info)={type(tar_info)}")
+
+        # Gather header_map from csv_file to handle multiple formats
+        try:
+            header_map, first_data_line = header_util.get_xyz_header_map_and_data_line_number(working_file)
+        except header_util.Error as err:
+            print(f"Error parsing header: {err.message}")
+            return None
+        #finally:
+        #    if (os.path.exists(working_file)):
+        #        os.remove(working_file)
+
         file_name = os.path.basename(tar_info.name)
         # get unique_id, flattening the list if there are multiple results
         unique_ids = list(itertools.chain(*self.find_values('uniqueID', self.metadata)))
@@ -69,11 +93,10 @@ class CsbCrawler:
         new_file_name = self.output_dir + "working/" + file_name[:-4] + ".csv"
         new_csv_file = open(new_file_name, "w+")
         new_csv_file.write("UUID,LON,LAT,DEPTH,TIME,PLATFORM_NAME,PROVIDER\n")
-
-        # Gather header_map from csv_file to handle multiple formats
-        header_map, first_data_line = header_util.get_xyz_header_map_and_data_line_number(tar_info.name)
         # Skip header
-        csv_file.readline()
+        for cnt in range(first_data_line):
+            csv_file.readline()
+        print("cnt=", cnt)
         cnt = 1
 
         # Loop through csv_file and write info back out with unique_id included.
