@@ -14,9 +14,9 @@ class csbCrawlerTest(unittest.TestCase):
     def setUp(self):
         root_dir = os.getenv("CSBCRAWLER")
         self.csbCrawler = CsbCrawler(root_dir)
-        self.metadata_file_name = self.csbCrawler.test_data_dir + "20190626_8bfee6d7ec345d3b503a4ed3adc0288b_metadata.json"
-        self.csv_file_name = self.csbCrawler.test_data_dir + "20190626_8bfee6d7ec345d3b503a4ed3adc0288b_pointData.csv"
-        self.tar_file_name = self.csbCrawler.test_data_dir + "20190626_8bfee6d7ec345d3b503a4ed3adc0288b.tar.gz"
+        self.metadata_file_name = self.csbCrawler.test_data_dir + "input/20190626_8bfee6d7ec345d3b503a4ed3adc0288b_metadata.json"
+        self.csv_file_name = self.csbCrawler.test_data_dir + "input/20190626_8bfee6d7ec345d3b503a4ed3adc0288b_pointData.csv"
+        self.tar_file_name = self.csbCrawler.test_data_dir + "input/20190626_8bfee6d7ec345d3b503a4ed3adc0288b.tar.gz"
 
     def tearDown(self):
         self.csbCrawler = None
@@ -33,6 +33,7 @@ class csbCrawlerTest(unittest.TestCase):
         metadata_file = open(self.metadata_file_name, "r")
         tar = tarfile.open(self.tar_file_name, "r:gz")
         metadata = self.csbCrawler.parse_metadata(metadata_file)
+        self.csbCrawler.metadata = metadata
         self.csbCrawler.process_csv_files(tar)
         # Close files
         metadata_file.close()

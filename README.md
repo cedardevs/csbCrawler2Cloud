@@ -102,6 +102,18 @@ AND
   "edate": "2019-01-01T23:59:00"
 }
 
+## Testing
+To use the testing facility build into PyCharm (JetBrains IDE), you will need to **set the CSBCRAWLER environment variable** for the 
+testSuite to run. For example, to execute CsbCrawlerTest.py, 
+1. Open the file in the editor, 
+1. Right click on the "CsbCrawlerTest.py" tab at the top of the editor window, 
+1. Select `Edit 'Unittests in CsbCraw...'...`
+1. In the dialog that opens, add `CSBCRAWLER=/Users/ktanaka/src/github/cedardevs/csbCrawler2Cloud` in the "Environment 
+variables:" box (adjust the path to your project location)
+1. Click "OK" to close the dialog
+
+Now if you right-click on the "CsbCrawlerTest.py" tab, you can select `Run 'Unittests in CsbCraw...'...`
+
 ## Dev Notes
 ### tar.gz Manifest
 Refering to this article for generating md5sum on a file:
