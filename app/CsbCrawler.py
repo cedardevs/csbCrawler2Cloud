@@ -8,6 +8,7 @@ import sys
 import tarfile
 from tarfile import TarFile
 from typing import Any, Union
+import dateutil.parser
 
 import yaml
 import app.spatialutil as spatial_util
@@ -33,8 +34,11 @@ class CsbCrawler:
     @staticmethod
     def time_formatter(obs_time_str):
         try:
-            obs_time = datetime.strptime(obs_time_str, '%Y%m%dT%H%M%SZ') #todo dateutil.parser.parse(datestring) is recommended
-            return obs_time.isoformat("T", timespec="seconds")
+            obs_time = dateutil.parser.parse(obs_time_str)
+            #obs_time = obs_time.replace(tzinfo=timezone.utc)
+            obs_time = obs_time.astimezone(timezone.utc)
+            obs_time_result = obs_time.isoformat("T", timespec="milliseconds")
+            return str(obs_time_result).replace('+00:00', 'Z') # Use shorter UTC format
         except ValueError as ve:
             print("Invalid date format, skipping...")
             return None

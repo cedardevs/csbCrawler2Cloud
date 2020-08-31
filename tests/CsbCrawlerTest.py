@@ -41,9 +41,27 @@ class csbCrawlerTest(unittest.TestCase):
         tar.close()
 
     def test_check_date_iso(self):
-        obs_time = CsbCrawler.time_formatter("20180410T140006Z")
-        print(obs_time)
-        self.assertEqual(str(obs_time), "2018-04-10T14:00:06")
+        test_data = [ # (input_string, expected_result, description of input)
+            ('20180410T140006Z',        '2018-04-10T14:00:06.000Z', 'No punctuation'),
+            ('20180410T140006.123Z',    '2018-04-10T14:00:06.123Z', 'No punctuation, fractional seconds'),
+            ('2018-04-10T14:00:06Z',    '2018-04-10T14:00:06.000Z', 'With punctuation'),
+            ('2018-04-10T14:00:06.123Z','2018-04-10T14:00:06.123Z', 'With punctuation, fractional seconds'),
+            ('2018-04-10T14:00:06.12Z', '2018-04-10T14:00:06.120Z', 'With punctuation, fractional seconds 2 decimals'),
+            ('2018-04-10T14:00:06.1234Z','2018-04-10T14:00:06.123Z', 'With punctuation, fractional seconds 4 decimals'),
+            ('20180410T140006+0000',    '2018-04-10T14:00:06.000Z', 'No punctuation, 0000 timezone offset'),
+            ('2018-04-10T14:00:06+00:00','2018-04-10T14:00:06.000Z', 'With punctuation, 00:00 timezone offset'),
+            ('2018-04-10T140006+00:00', '2018-04-10T14:00:06.000Z', 'With some punctuation, 00:00 timezone offset'),
+            ('2018-04-10T14:00:06-07:00','2018-04-10T21:00:06.000Z', 'With punctuation, -07:00 timezone offset'),
+            ('2018-04-10T14:00:06+01:00','2018-04-10T13:00:06.000Z', 'With punctuation, +01:00 timezone offset'),
+        ]
+
+        # Loop over test data
+        for test_line in test_data:
+            input_string, expected_result, description = test_line
+            print(f'"{input_string}" -> "{expected_result}", {description}')
+            obs_time = CsbCrawler.time_formatter(input_string)
+            print('         Actual result', obs_time)
+            self.assertEqual(str(obs_time), expected_result)
 
     def test_spatial_join(self):
         file_name = "subset.csv"
