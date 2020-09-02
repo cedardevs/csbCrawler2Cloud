@@ -1,4 +1,5 @@
 import re
+import dateutil.parser
 
 def parse_header_line(header_line):
     header_map = {}
@@ -16,7 +17,19 @@ def parse_header_line(header_line):
             header_map['time'] = i
     return header_map
 
+def datetime_valid(date_str):
+    if "T" in date_str:
+        try:
+            dateutil.parser.parse(date_str)
+        except:
+            return False
+        return True
+    else:
+        return False
+
+
 # header_map, first_data_line = header_util.get_xyz_header_map_and_data_line_number(csv_filename)
+# first_data_line starts at 0
 def get_xyz_header_map_and_data_line_number(csv_filename):
     #print("In get_xyz_header_map_and_data_line_number")
     default_xyz_header = 'lat,lon,depth,time'
@@ -25,7 +38,7 @@ def get_xyz_header_map_and_data_line_number(csv_filename):
     header_line = ''
     max_xyz_lines_to_scan = 10
     line_index = 0
-    print(f"csv_filename='{csv_filename}'")
+    #print(f"csv_filename='{csv_filename}'")
     with open(csv_filename, "r") as csv_file:
         for line in csv_file:
             if line_index >= max_xyz_lines_to_scan or first_data_line >= 0:
@@ -54,13 +67,13 @@ def get_xyz_header_map_and_data_line_number(csv_filename):
                             raise MissingHeaderError(f"Data encountered before a header was found in '{csv_filename}'")
                         # if 'time' is in the header, confirm the time column contains the letter 'T' (ISO 8601)
                         if 'time' in header_map:
-                            if 'T' in tokens[header_map['time']]:
+                            if datetime_valid(tokens[header_map['time']]):
                                 pass
                                 #print(f"get_xyz_header_map_and_data_line_number(): data line='{line}' will be matched to header_map:{header_map}'")
                             else:
                                 #print(f"get_xyz_header_map_and_data_line_number(): WARN header line='{header_line}' did not match data, using default header '{default_xyz_header}'")
                                 header_map = parse_header_line(default_xyz_header)
-                                if not 'T' in tokens[header_map['time']]:
+                                if not datetime_valid(tokens[header_map['time']]):
                                     raise IncorrectHeaderError(f"Header and default header did not match the time column in file '{csv_filename}'")
             line_index += 1
     #print("...result=")
