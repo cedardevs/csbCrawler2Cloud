@@ -3,20 +3,26 @@ import app.headerutil as header_util
 from app.CsbCrawler import CsbCrawler
 
 class TestHeaderUtilities(unittest.TestCase):
-    data_filenames = [ # (input_file, expected_header_map, expected_data_line, expected_error)
-        ('data-rosep-v1.xyz', {'lon':1, 'lat':0, 'depth':2, 'time':3}, 1, None),
-        ('data-rosep-v2.xyz', {'lon':1, 'lat':0, 'depth':2, 'time':3}, 1, None),
-        ('data-jcuau-v1.xyz', {'lon':0, 'lat':1, 'depth':2, 'time':3}, 1, None),
-        ('data-farsnd-v1.xyz', {'lon':0, 'lat':1, 'depth':2, 'time':3}, 1, None),
-        ('data-withLinesToIgnore.xyz', {'lon':0, 'lat':1, 'depth':2, 'time':3}, 5, None),
-        ('data-withLongitudeLatitudeHeader.xyz', {'lon':0, 'lat':1, 'depth':2, 'time':3}, 2, None),
-        ('data-withExtraColumns.xyz', {'lon':0, 'lat':1, 'depth':2, 'time':4}, 1, None),
-        ('data-withTooMuchHeader.xyz', {'lon':0, 'lat':1, 'depth':2, 'time':3}, 0, header_util.MissingDataError),
-        ('data-withNoHeader.xyz', {'lon':0, 'lat':1, 'depth':2, 'time':3}, 0, header_util.MissingHeaderError),
-    ]
+    def setUp(self):
+        pass
+
+    def tearDown(self):
+        pass
 
     def test_header_map(self):
-        for test_line in self.data_filenames:
+        data_filenames = [  # (input_file, expected_header_map, expected_data_line, expected_error)
+            ('data-rosep-v1.xyz',                       {'lon': 1, 'lat': 0, 'depth': 2, 'time': 3}, 1, None),
+            ('data-rosep-v2.xyz',                       {'lon': 1, 'lat': 0, 'depth': 2, 'time': 3}, 1, None),
+            ('data-jcuau-v1.xyz',                       {'lon': 0, 'lat': 1, 'depth': 2, 'time': 3}, 1, None),
+            ('data-farsnd-v1.xyz',                      {'lon': 0, 'lat': 1, 'depth': 2, 'time': 3}, 1, None),
+            ('data-withLinesToIgnore.xyz',              {'lon': 0, 'lat': 1, 'depth': 2, 'time': 3}, 5, None),
+            ('data-withLongitudeLatitudeHeader.xyz',    {'lon': 0, 'lat': 1, 'depth': 2, 'time': 3}, 2, None),
+            ('data-withExtraColumns.xyz',               {'lon': 0, 'lat': 1, 'depth': 2, 'time': 4}, 1, None),
+            ('data-withTooMuchHeader.xyz',              {'lon': 0, 'lat': 1, 'depth': 2, 'time': 3}, 0, header_util.MissingDataError),
+            ('data-withNoHeader.xyz',                   {'lon': 0, 'lat': 1, 'depth': 2, 'time': 3}, 0, header_util.MissingHeaderError),
+        ]
+
+        for test_line in data_filenames:
             input_file, expected_header_map, expected_data_line, expected_error = test_line
             print("filename='%s'" % input_file)
             if (expected_error != None):
