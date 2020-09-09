@@ -88,6 +88,11 @@ class CsbCrawler:
         #        os.remove(working_file)
 
         file_name = os.path.basename(tar_info.name)
+        # Get UUID portion of filename
+        # 20190626_8bfee6d7ec345d3b503a4ed3adc0288b_pointData.xyz
+        #          \______________________________/
+        #           `- UUID identifies data file submitted
+        file_uuid = file_name.split('_')[1] # Split on underscore and use element at index 1
         # get unique_id, flattening the list if there are multiple results
         unique_ids = list(itertools.chain(*self.find_values('uniqueID', self.metadata)))
         unique_id = unique_ids[0]
@@ -96,7 +101,7 @@ class CsbCrawler:
         print("Adding " + unique_id + " to csv")
         new_file_name = self.output_dir + "working/" + file_name[:-4] + ".csv"
         new_csv_file = open(new_file_name, "w+")
-        new_csv_file.write("UUID,LON,LAT,DEPTH,TIME,PLATFORM_NAME,PROVIDER\n")
+        new_csv_file.write("UNIQUE_ID,FILE_UUID,LON,LAT,DEPTH,TIME,PLATFORM_NAME,PROVIDER\n")
         # Skip header
         for cnt in range(first_data_line):
             csv_file.readline()
@@ -113,7 +118,7 @@ class CsbCrawler:
                 obs_time_str = tokens[3]
                 obs_time = self.time_formatter(obs_time_str)
                 if (obs_time != None):
-                    new_line = unique_id + "," + tokens[1] + "," + tokens[0] + "," + tokens[2] + "," + obs_time + "," + self.metadata["platform"]["name"] + "," + self.metadata["providerContactPoint"]["orgName"]
+                    new_line = f'{unique_id},{file_uuid},{tokens[1]},{tokens[0]},{tokens[2]},{obs_time},{self.metadata["platform"]["name"]},{self.metadata["providerContactPoint"]["orgName"]}'
                     #print("Line {}: {}".format(cnt, new_line))
                     new_csv_file.write(new_line + "\n")
 
@@ -128,7 +133,7 @@ class CsbCrawler:
 
             # Remove unnecessary columns
             pts_to_share = join[join['EXCLUDE'] != "Y"]
-            pts_to_share = pts_to_share[['UUID', 'LON', 'LAT', 'DEPTH', 'TIME', 'PLATFORM_NAME', 'PROVIDER','EXCLUDE']]
+            pts_to_share = pts_to_share[['UNIQUE_ID', 'FILE_UUID', 'LON', 'LAT', 'DEPTH', 'TIME', 'PLATFORM_NAME', 'PROVIDER','EXCLUDE']]
 
             # Write back out as a csv
             print(pts_to_share['EXCLUDE'].count())
