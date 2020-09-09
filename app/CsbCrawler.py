@@ -99,7 +99,7 @@ class CsbCrawler:
         #print("uniqueID from metadata='" + unique_id + "'")
 
         print("Adding " + unique_id + " to csv")
-        new_file_name = self.output_dir + "working/" + file_name[:-4] + ".csv"
+        new_file_name = self.output_dir + "csv/" + file_name[:-4] + ".csv"
         new_csv_file = open(new_file_name, "w+")
         new_csv_file.write("UNIQUE_ID,FILE_UUID,LON,LAT,DEPTH,TIME,PLATFORM_NAME,PROVIDER\n")
         # Skip header
