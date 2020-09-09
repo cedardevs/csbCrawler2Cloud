@@ -41,19 +41,20 @@ class csbCrawlerTest(unittest.TestCase):
         tar.close()
 
     def test_check_date_iso(self):
-        test_data = [ # (input_string, expected_result, description of input)
-            ('20180410T140006Z',        '2018-04-10T14:00:06.000Z', 'No punctuation (Rosepoint)'),
-            ('2018-04-10T14:00:06Z',    '2018-04-10T14:00:06.000Z', 'With punctuation (James Cook, MacGregor)'),
-            ('2018-04-10T14:00:06.123000Z','2018-04-10T14:00:06.123Z', 'With punctuation, fractional seconds 6 decimals (Farsounder)'),
-            ('2018-04-10T14:00:06.12Z', '2018-04-10T14:00:06.120Z', 'With punctuation, fractional seconds 2 decimals'),
-            ('2018-04-10T14:00:06.123Z','2018-04-10T14:00:06.123Z', 'With punctuation, fractional seconds 3 decimals'),
-            ('2018-04-10T14:00:06.1234Z','2018-04-10T14:00:06.123Z', 'With punctuation, fractional seconds 4 decimals'),
-            ('20180410T140006.123Z',    '2018-04-10T14:00:06.123Z', 'No punctuation, fractional seconds'),
-            ('20180410T140006+0000',    '2018-04-10T14:00:06.000Z', 'No punctuation, 0000 timezone offset'),
-            ('2018-04-10T14:00:06+00:00','2018-04-10T14:00:06.000Z', 'With punctuation, 00:00 timezone offset'),
-            ('2018-04-10T140006+00:00', '2018-04-10T14:00:06.000Z', 'With some punctuation, 00:00 timezone offset'),
-            ('2018-04-10T14:00:06-07:00','2018-04-10T21:00:06.000Z', 'With punctuation, -07:00 timezone offset'),
-            ('2018-04-10T14:00:06+01:00','2018-04-10T13:00:06.000Z', 'With punctuation, +01:00 timezone offset'),
+        test_data = [
+            # (input_string,                expected_result,            description of input)
+            ('20180410T140006Z',            '2018-04-10T14:00:06.000Z', 'No punctuation (Rosepoint)'),
+            ('2018-04-10T14:00:06Z',        '2018-04-10T14:00:06.000Z', 'With punctuation (James Cook, MacGregor)'),
+            ('2018-04-10T14:00:06.123000Z', '2018-04-10T14:00:06.123Z', 'With punctuation, fractional seconds 6 decimals (Farsounder)'),
+            ('2018-04-10T14:00:06.12Z',     '2018-04-10T14:00:06.120Z', 'With punctuation, fractional seconds 2 decimals'),
+            ('2018-04-10T14:00:06.123Z',    '2018-04-10T14:00:06.123Z', 'With punctuation, fractional seconds 3 decimals'),
+            ('2018-04-10T14:00:06.1234Z',   '2018-04-10T14:00:06.123Z', 'With punctuation, fractional seconds 4 decimals'),
+            ('20180410T140006.123Z',        '2018-04-10T14:00:06.123Z', 'No punctuation, fractional seconds'),
+            ('20180410T140006+0000',        '2018-04-10T14:00:06.000Z', 'No punctuation, 0000 timezone offset'),
+            ('2018-04-10T14:00:06+00:00',   '2018-04-10T14:00:06.000Z', 'With punctuation, 00:00 timezone offset'),
+            ('2018-04-10T140006+00:00',     '2018-04-10T14:00:06.000Z', 'With some punctuation, 00:00 timezone offset'),
+            ('2018-04-10T14:00:06-07:00',   '2018-04-10T21:00:06.000Z', 'With punctuation, -07:00 timezone offset'),
+            ('2018-04-10T14:00:06+01:00',   '2018-04-10T13:00:06.000Z', 'With punctuation, +01:00 timezone offset'),
         ]
 
         # Loop over test data
