@@ -1,15 +1,18 @@
 # Extract CSB files
 
 from datetime import datetime, timezone
+import itertools
 import json
 import os
 import sys
 import tarfile
 from tarfile import TarFile
 from typing import Any, Union
+import dateutil.parser
 
 import yaml
 import app.spatialutil as spatial_util
+import app.headerutil as header_util
 import hashlib
 
 
@@ -31,27 +34,81 @@ class CsbCrawler:
     @staticmethod
     def time_formatter(obs_time_str):
         try:
-            obs_time = datetime.strptime(obs_time_str, '%Y%m%dT%H%M%SZ')
-            return obs_time.isoformat("T", timespec="seconds")
+            obs_time = dateutil.parser.parse(obs_time_str)
+            #obs_time = obs_time.replace(tzinfo=timezone.utc)
+            obs_time = obs_time.astimezone(timezone.utc)
+            obs_time_result = obs_time.isoformat("T", timespec="milliseconds")
+            return str(obs_time_result).replace('+00:00', 'Z') # Use shorter UTC format
         except ValueError as ve:
             print("Invalid date format, skipping...")
             return None
 
+    # Scan through json_meta for values with the key of search_key
+    def find_values(self, search_key, json_meta):
+        results = []
+        if type(json_meta) == str:
+            json_meta = json.loads(json_meta)
+        if type(json_meta) is dict:
+            for jsonkey in json_meta:
+                if type(json_meta[jsonkey]) in (list, dict):
+                    results.append(self.find_values(search_key, json_meta[jsonkey]))
+                elif jsonkey == search_key:
+                    #print( "Found " + id + " with value '" + json_meta[jsonkey] + "'")
+                    results.append(json_meta[jsonkey])
+        elif type(json_meta) is list:
+            for item in json_meta:
+                if type(item) in (list, dict):
+                    results.append(self.find_values(search_key, item))
+        return results
+
     def add_uuid_to_csv(self, tar, tar_info):
         csv_file = tar.extractfile(tar_info)
+        print(f"csv_file='{csv_file}', type(csv_file)={type(csv_file)}")
+
+        tf = tarfile.open(tar.name)
+        print("tarfile contents:", tf.getnames())
+
+        work_dir = self.output_dir + "working/"
+        tar.extract(tar_info, work_dir)
+        working_file = work_dir + os.path.basename(tar_info.name)
+        print(f"working_file='{working_file}', type={type(working_file)}")
+
+        #tar_item_name = self.data_dir + "input/" + os.path.basename(tar_info.name)
+        #print(f"tar_item_name='{tar_item_name}', type={type(tar_item_name)}")
+        #print(f"type(tar_info)={type(tar_info)}")
+
+        # Gather header_map from csv_file to handle multiple formats
+        try:
+            header_map, first_data_line = header_util.get_xyz_header_map_and_data_line_number(working_file)
+        except header_util.Error as err:
+            print(f"Error parsing header: {err.message}")
+            return None
+        #finally:
+        #    if (os.path.exists(working_file)):
+        #        os.remove(working_file)
+
         file_name = os.path.basename(tar_info.name)
-        uuid = file_name[9:41]
+        # Get UUID portion of filename
+        # 20190626_8bfee6d7ec345d3b503a4ed3adc0288b_pointData.xyz
+        #          \______________________________/
+        #           `- UUID identifies data file submitted
+        file_uuid = file_name.split('_')[1] # Split on underscore and use element at index 1
+        # get unique_id, flattening the list if there are multiple results
+        unique_ids = list(itertools.chain(*self.find_values('uniqueID', self.metadata)))
+        unique_id = unique_ids[0]
+        #print("uniqueID from metadata='" + unique_id + "'")
 
-        print("Adding " + uuid + " to csv")
-        new_file_name = self.output_dir + "working/" + file_name[:-4] + ".csv"
+        print("Adding " + unique_id + " to csv")
+        new_file_name = self.output_dir + "csv/" + file_name[:-4] + ".csv"
         new_csv_file = open(new_file_name, "w+")
-        new_csv_file.write("UUID,LON,LAT,DEPTH,TIME,PLATFORM_NAME,PROVIDER\n")
-
+        new_csv_file.write("UNIQUE_ID,FILE_UUID,LON,LAT,DEPTH,TIME,PLATFORM_NAME,PROVIDER\n")
         # Skip header
-        csv_file.readline()
+        for cnt in range(first_data_line):
+            csv_file.readline()
+        print("cnt=", cnt)
         cnt = 1
 
-        # Loop through csv_file and write info back out with uuid included.
+        # Loop through csv_file and write info back out with unique_id included.
         for _ in csv_file:
             # TODO add more validation checks?
             line = (csv_file.readline()).decode("UTF-8").strip()
@@ -61,7 +118,7 @@ class CsbCrawler:
                 obs_time_str = tokens[3]
                 obs_time = self.time_formatter(obs_time_str)
                 if (obs_time != None):
-                    new_line = uuid + "," + tokens[1] + "," + tokens[0] + "," + tokens[2] + "," + obs_time + "," + self.metadata["platform"]["name"] + "," + self.metadata["providerContactPoint"]["orgName"]
+                    new_line = f'{unique_id},{file_uuid},{tokens[1]},{tokens[0]},{tokens[2]},{obs_time},{self.metadata["platform"]["name"]},{self.metadata["providerContactPoint"]["orgName"]}'
                     #print("Line {}: {}".format(cnt, new_line))
                     new_csv_file.write(new_line + "\n")
 
@@ -76,7 +133,7 @@ class CsbCrawler:
 
             # Remove unnecessary columns
             pts_to_share = join[join['EXCLUDE'] != "Y"]
-            pts_to_share = pts_to_share[['UUID', 'LON', 'LAT', 'DEPTH', 'TIME', 'PLATFORM_NAME', 'PROVIDER','EXCLUDE']]
+            pts_to_share = pts_to_share[['UNIQUE_ID', 'FILE_UUID', 'LON', 'LAT', 'DEPTH', 'TIME', 'PLATFORM_NAME', 'PROVIDER','EXCLUDE']]
 
             # Write back out as a csv
             print(pts_to_share['EXCLUDE'].count())

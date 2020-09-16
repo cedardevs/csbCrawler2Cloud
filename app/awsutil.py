@@ -7,7 +7,7 @@ def objectkey_exists(s3, bucket, s3_file):
     exists = True
     try:
         s3 = boto3.resource('s3')
-        object = s3.Object('odp-noaa-nesdis-ncei-csb', s3_file)
+        object = s3.Object(bucket, s3_file)
         print("load object")
         object.load()
     except botocore.exceptions.ClientError as e:

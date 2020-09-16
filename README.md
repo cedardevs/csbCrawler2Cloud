@@ -63,6 +63,7 @@ The data lands on NCEI disk as a tarball with 3 files:
  - YYYYMMDD_uuid_pointData.xyz
  
 ### Athena Notes
+```
 -- Generate timestamp column
  SELECT *, from_iso8601_timestamp("xyz"."time") ts FROM csbathenadb.xyz 
 
@@ -91,8 +92,10 @@ BETWEEN
   from_iso8601_timestamp('2015-01-01T00:00:00') 
 AND 
   from_iso8601_timestamp('2019-01-01T23:59:00')   
+```
   
 ### Example Request 
+```
 {
   "uuid": "",
   "email": "david.neufeld@colorado.edu",
@@ -101,6 +104,7 @@ AND
   "sdate": "2015-01-01T00:00:00",
   "edate": "2019-01-01T23:59:00"
 }
+```
 
 ## Testing
 To use the testing facility build into PyCharm (JetBrains IDE), you will need to **set the CSBCRAWLER environment variable** for the 
@@ -120,6 +124,7 @@ Refering to this article for generating md5sum on a file:
 https://stackoverflow.com/questions/3431825/generating-an-md5-checksum-of-a-file
 
 ## Bucket policy
+```
 {
     "Version": "2012-10-17",
     "Statement": [
@@ -132,3 +137,4 @@ https://stackoverflow.com/questions/3431825/generating-an-md5-checksum-of-a-file
         }
     ]
 }
+```
