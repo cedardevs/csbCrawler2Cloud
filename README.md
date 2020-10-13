@@ -119,6 +119,23 @@ variables:" box (adjust the path to your project location)
 Now if you right-click on the "CsbCrawlerTest.py" tab, you can select `Run 'Unittests in CsbCraw...'...`
 
 ## Dev Notes
+### Generating a Distribution
+Create a source distribution with:
+```bash
+python setup.py sdist
+```
+A `.tar.gz` file should appear in the `dist/` subdirectory.
+
+Create a built distribution with:
+``` bash
+python setup.py bdist_wheel
+```
+A `.whl` file should appear in the `dist/` subdirectory.
+Make use of this file with 
+```bash
+pip install csbCrawler2Cloud-1.0.0-py3-non-any.whl
+```
+
 ### tar.gz Manifest
 Refering to this article for generating md5sum on a file:
 https://stackoverflow.com/questions/3431825/generating-an-md5-checksum-of-a-file

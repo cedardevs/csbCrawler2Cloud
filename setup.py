@@ -1,7 +1,7 @@
 """A setuptools based setup module.
 See:
 https://packaging.python.org/guides/distributing-packages-using-setuptools/
-https://github.com/pypa/sampleproject
+https://github.com/cedaredevs/csbCrawler2Cloud
 """
 
 # Always prefer setuptools over distutils
@@ -11,7 +11,7 @@ import pathlib
 here = pathlib.Path(__file__).parent.resolve()
 
 # Get the long description from the README file
-long_description = (here / 'README.md').read_text(encoding='utf-8')
+long_description = (here / "README.md").read_text(encoding="utf-8")
 
 # Arguments marked as "Required" below must be included for upload to PyPI.
 # Fields marked as "Optional" may be commented out.
@@ -21,28 +21,25 @@ setup(
     # package, this name will be registered for you. It will determine how
     # users can install this project, e.g.:
     #
-    # $ pip install sampleproject
+    # $ pip install csbCrawler2Cloud
     #
-    # And where it will live on PyPI: https://pypi.org/project/sampleproject/
+    # And where it will live on PyPI: https://pypi.org/project/csbCrawler2Cloud/
     #
     # There are some restrictions on what makes a valid project name
     # specification here:
     # https://packaging.python.org/specifications/core-metadata/#name
-    name='csbCrawler2cloud',  # Required
-
+    name="csbCrawler2Cloud",  # Required
     # Versions should comply with PEP 440:
     # https://www.python.org/dev/peps/pep-0440/
     #
     # For a discussion on single-sourcing the version across setup.py and the
     # project code, see
     # https://packaging.python.org/en/latest/single_source_version.html
-    version='2.0.0',  # Required
-
+    version="1.0.0",  # Required
     # This is a one-line description or tagline of what your project does. This
     # corresponds to the "Summary" metadata field:
     # https://packaging.python.org/specifications/core-metadata/#summary
-    description='Load Crowd-Sourced Bathymetry into cloud data storage',  # Optional
-
+    description="Load Crowd-Sourced Bathymetry into cloud data storage",  # Optional
     # This is an optional longer description of your project that represents
     # the body of text which users will see when they visit PyPI.
     #
@@ -52,7 +49,6 @@ setup(
     # This field corresponds to the "Description" metadata field:
     # https://packaging.python.org/specifications/core-metadata/#description-optional
     long_description=long_description,  # Optional
-
     # Denotes that our long_description is in Markdown; valid values are
     # text/plain, text/x-rst, and text/markdown
     #
@@ -63,22 +59,18 @@ setup(
     #
     # This field corresponds to the "Description-Content-Type" metadata field:
     # https://packaging.python.org/specifications/core-metadata/#description-content-type-optional
-    long_description_content_type='text/markdown',  # Optional (see note above)
-
+    long_description_content_type="text/markdown",  # Optional (see note above)
     # This should be a valid link to your project's main homepage.
     #
     # This field corresponds to the "Home-Page" metadata field:
     # https://packaging.python.org/specifications/core-metadata/#home-page-optional
-    url='https://github.com/cedardevs/csbCrawler2Cloud',  # Optional
-
+    url="https://github.com/cedardevs/csbCrawler2Cloud",  # Optional
     # This should be your name or the name of the organization which owns the
     # project.
-    author='CEDARDEVS',  # Optional
-
+    author="CEDARDEVS",  # Optional
     # This should be a valid email address corresponding to the author listed
     # above.
-    author_email='cedar.cires@colorado.edu',  # Optional
-
+    author_email="cedar.cires@colorado.edu",  # Optional
     # Classifiers help users find your project by categorizing it.
     #
     # For a list of valid classifiers, see https://pypi.org/classifiers/
@@ -87,38 +79,32 @@ setup(
         #   3 - Alpha
         #   4 - Beta
         #   5 - Production/Stable
-        'Development Status :: 3 - Alpha',
-
+        "Development Status :: 3 - Alpha",
         # Indicate who your project is intended for
-        'Intended Audience :: Developers',
-        'Topic :: Data Ingest :: Data Upload Program',
-
+        "Intended Audience :: Developers",
+        "Topic :: Data Ingest :: Data Upload Program",
         # Pick your license as you wish
-        'License :: OSI Approved :: GNU GPL2 License',
-
+        "License :: OSI Approved :: GNU GPL2 License",
         # Specify the Python versions you support here. In particular, ensure
         # that you indicate you support Python 3. These classifiers are *not*
         # checked by 'pip install'. See instead 'python_requires' below.
-        'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.5',
-        'Programming Language :: Python :: 3.6',
-        'Programming Language :: Python :: 3.7',
-        'Programming Language :: Python :: 3.8',
-        'Programming Language :: Python :: 3 :: Only',
+        "Programming Language :: Python :: 3",
+        "Programming Language :: Python :: 3.5",
+        "Programming Language :: Python :: 3.6",
+        "Programming Language :: Python :: 3.7",
+        "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3 :: Only",
     ],
-
     # This field adds keywords for your project which will appear on the
     # project page. What does your project relate to?
     #
     # Note that this is a list of additional keywords, separated
     # by commas, to be used to assist searching for the distribution in a
     # larger catalog.
-    keywords='data_upload, bathymetry, crowd_sourced',  # Optional
-
+    keywords="data_upload, bathymetry, crowd_sourced",  # Optional
     # When your source code is in a subdirectory under the project root, e.g.
     # `src/`, it is necessary to specify the `package_dir` argument.
-    package_dir={'': 'app'},  # Optional
-
+    package_dir={"": "app"},  # Optional
     # You can just specify package directories manually here if your project is
     # simple. Or you can use find_packages().
     #
@@ -128,61 +114,87 @@ setup(
     #
     #   py_modules=["my_module"],
     #
-    packages=find_packages(where='app'),  # Required
-
+    packages=find_packages(where="app"),  # Required
     # Specify which Python versions you support. In contrast to the
     # 'Programming Language' classifiers above, 'pip install' will check this
     # and refuse to install the project if the version does not match. See
     # https://packaging.python.org/guides/distributing-packages-using-setuptools/#python-requires
-    python_requires='>=3.5, <4',
-
+    python_requires=">=3.5, <4",
     # This field lists other packages that your project depends on to run.
     # Any package you put here will be installed by pip when your project is
     # installed, so they must be valid existing projects.
     #
     # For an analysis of "install_requires" vs pip's requirements files see:
     # https://packaging.python.org/en/latest/requirements.html
-    install_requires=['peppercorn'],  # Optional
-
+    install_requires=[
+        "attrs==20.2.0; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3'",
+        "boto3==1.15.14",
+        "botocore==1.18.14",
+        "click==7.1.2; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4'",
+        "click-plugins==1.1.1",
+        "cligj==0.5.0",
+        "fiona==1.8.17",
+        "geopandas==0.8.1",
+        "jmespath==0.10.0; python_version >= '2.6' and python_version not in '3.0, 3.1, 3.2, 3.3'",
+        "munch==2.5.0",
+        "numpy==1.19.2; python_version >= '3.6'",
+        "pandas==1.1.3",
+        "pyproj==2.6.1.post1; python_version >= '3.5'",
+        "python-dateutil==2.8.1; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3'",
+        "pytz==2020.1",
+        "pyyaml==5.1.2",
+        "rtree==0.9.4",
+        "s3transfer==0.3.3",
+        "shapely==1.7.1",
+        "six==1.15.0; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3'",
+        "urllib3==1.25.10; python_version != '3.4'",
+    ],  # Optional
     # List additional groups of dependencies here (e.g. development
     # dependencies). Users will be able to install these using the "extras"
     # syntax, for example:
     #
-    #   $ pip install sampleproject[dev]
+    #   $ pip install csbCrawler2Cloud[dev]
     #
     # Similar to `install_requires` above, these must be valid existing
     # projects.
-    extras_require={  # Optional
-        'dev': ['check-manifest'],
-        'test': ['coverage'],
-    },
-
+    extras_require={"dev": ["check-manifest"], "test": ["coverage"],},  # Optional
     # If there are data files included in your packages that need to be
     # installed, specify them here.
-    package_data={  # Optional
-        'sample': ['package_data.dat'],
-    },
-
+    package_data={"csbCrawler2Cloud": ["package_data.dat"],},  # Optional
     # Although 'package_data' is the preferred approach, in some case you may
     # need to place data files outside of your packages. See:
     # http://docs.python.org/distutils/setupscript.html#installing-additional-files
     #
-    # In this case, 'data_file' will be installed into '<sys.prefix>/my_data'
-    data_files=[('my_data', ['data/data_file'])],  # Optional
-
+    data_files=[("data/input/gis", ["data/input/gis/EEZ.cpg",
+                                    "data/input/gis/EEZ.dbf",
+                                    "data/input/gis/EEZ.prj",
+                                    "data/input/gis/EEZ.sbn",
+                                    "data/input/gis/EEZ.sbx",
+                                    "data/input/gis/EEZ.shp",
+                                    "data/input/gis/EEZ.shx",
+                                    "data/input/gis/TERRITORIAL_SEAS.cpg",
+                                    "data/input/gis/TERRITORIAL_SEAS.dbf",
+                                    "data/input/gis/TERRITORIAL_SEAS.prj",
+                                    "data/input/gis/TERRITORIAL_SEAS.sbn",
+                                    "data/input/gis/TERRITORIAL_SEAS.sbx",
+                                    "data/input/gis/TERRITORIAL_SEAS.shp",
+                                    "data/input/gis/TERRITORIAL_SEAS.shx",
+                                    ]),
+                ("config", ["config/SAMPLE-config.yaml",
+                            "config/SAMPLE-credentials.yaml"]),
+                ("docs", ["docs/readme.htm"]),
+                ("docs/css", ["docs/css/awsod.css",
+                              "docs/css/bootstrap.min.css"])],  # Optional
     # To provide executable scripts, use entry points in preference to the
     # "scripts" keyword. Entry points provide cross-platform support and allow
     # `pip` to create the appropriate form of executable for the target
     # platform.
     #
-    # For example, the following would provide a command called `sample` which
+    # For example, the following would provide a command called `csbCrawler2Cloud` which
     # executes the function `main` from this package when invoked:
-    entry_points={  # Optional
-        'console_scripts': [
-            'sample=sample:main',
-        ],
-    },
-
+    entry_points={
+        "console_scripts": ["csbCrawler2Cloud=launch_app:main",],
+    },  # Optional
     # List additional URLs that are relevant to your project as a dict.
     #
     # This field corresponds to the "Project-URL" metadata fields:
@@ -193,9 +205,7 @@ setup(
     # maintainers, and where to support the project financially. The key is
     # what's used to render the link text on PyPI.
     project_urls={  # Optional
-        'Bug Reports': 'https://github.com/pypa/sampleproject/issues',
-        'Funding': 'https://donate.pypi.org',
-        'Say Thanks!': 'http://saythanks.io/to/example',
-        'Source': 'https://github.com/pypa/sampleproject/',
+        "Bug Reports": "https://github.com/cedaredevs/csbCrawler2Cloud/issues",
+        "Source": "https://github.com/cedaredevs/csbCrawler2Cloud/",
     },
 )
