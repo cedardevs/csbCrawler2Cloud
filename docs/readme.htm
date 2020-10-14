@@ -23,7 +23,7 @@ NOAA CSB on AWS
 
 <h2 id="accessing-the-archive-data">Accessing the Archive Data</h2>
 
-<p>CSB data is hosted in the <code>odp-noaa-nesdis-ncei-csb</code> Amazon S3 bucket in the us-west-2 AWS region. The address for the public bucket is: <code>https://odp-noaa-nesdis-ncei-csb-docs.s3-us-west-2.s3.amazonaws.com</code>.</p>
+<p>CSB data is hosted in the <code>odp-noaa-nesdis-ncei-csb</code> Amazon S3 bucket in the us-west-2 AWS region. The address for the public bucket is: <code>https://odp-noaa-nesdis-ncei-csb.s3.amazonaws.com/</code>.</p>
 
 <p>Each file is available as an object in Amazon S3. The basic data format is:</p>
 
@@ -54,19 +54,19 @@ NOAA CSB on AWS
 
 <p>Using the AWS CLI is the most convenient way to get the data from S3. The CLI is a set of command line tools that enable functionality such as <code>ls</code>, <code>cp</code>, and <code>sync</code> for S3 buckets. To install the CLI read the <a href="https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-install.html">installation instructions</a> for your platform.</p>
 
-<p>For example, to list all the data for June 6th, 2019 for the KTLX radar site do:</p>
+<p>For example, to list all the data for June 6th, 2019 do:</p>
 
-<p><code>aws s3 ls s3://odp-noaa-nesdis-ncei-csb/2019/06/26/ --no-sign-request</code></p>
+<p><code>aws s3 ls s3://odp-noaa-nesdis-ncei-csb/csv/2019/06/26/ --no-sign-request</code></p>
 
 <p>The <code>--no-sign-request</code> flag enables you to run the command without providing credentials. This works because the bucket is publicly accessible.</p>
 
 <p>To download all of the data for June 26th, 2019:</p>
 
-<p><code>aws s3 cp s3://odp-noaa-nesdis-ncei-csb/2019/06/26/ . --recursive --no-sign-request</code></p>
+<p><code>aws s3 cp s3://odp-noaa-nesdis-ncei-csb/csv/2019/06/26/ . --recursive --no-sign-request</code></p>
 
-<p>Here the <code>--recursive</code> flag tells the CLI to grab all objects which begin with the keypath <code>s3://odp-noaa-nesdis-ncei-csb/2019/06/26/</code>.</p>
+<p>Here the <code>--recursive</code> flag tells the CLI to grab all objects which begin with the keypath <code>s3://odp-noaa-nesdis-ncei-csb/csv/2019/06/26/</code>.</p>
 
-<h2 id="subscribing-to-csb-data-notifications">Subscribing to CSB Data Notifications<a href="https://docs.opendata.aws/noaa-nexrad/readme.html#subscribing-to-nexrad-data-notifications" class="hanchor" arialabel="Anchor"> 🔗︎</a> </h2>
+<h2 id="subscribing-to-csb-data-notifications">SNS</h2>
 
 <p>We have set up public Amazon Simple Notification Service (SNS) topics that create a notification for every new object added to the Amazon S3 bucket on AWS. To start, you can subscribe to these notifications using email, Amazon SQS or AWS Lambda. This means you can automatically trigger event-based processing to derive value added products.</p>
 
