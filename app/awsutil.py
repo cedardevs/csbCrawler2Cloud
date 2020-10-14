@@ -1,4 +1,5 @@
 import os
+import uuid
 import boto3
 import botocore
 
@@ -23,13 +24,15 @@ def upload_to_aws(crawler, local_file, bucket, s3_file, overwrite):
     s3 = boto3.client('s3', aws_access_key_id=crawler.access_key,
                       aws_secret_access_key=crawler.secret_key)
     key_exists = False
+    osim_uuid = uuid.uuid5(uuid.NAMESPACE_DNS, 'data.noaa.gov')
 
     if not overwrite:
         key_exists = objectkey_exists(s3, bucket, s3_file)
 
     if (not key_exists) or (key_exists and overwrite):
         try:
-            s3.upload_file(local_file, bucket, s3_file)
+            s3.upload_file(local_file, bucket, s3_file,
+                ExtraArgs={'Metadata': {'osim-uuid': osim_uuid}})
             print("Upload Successful")
             return True
         except FileNotFoundError:
