@@ -6,5 +6,19 @@ include *.md
 # Include the license file
 include LICENSE.txt
 
+# Include top level files
+include launch_app.py
+include Pipfile
+include Pipfile.lock
+
+# Include config, docs, client and server
+recursive-include config SAMPLE-*
+recursive-include docs *
+recursive-include onestop-client *
+recursive-include server *
+
+# Include tests
+recursive-include tests *
+
 # Include the data files
 recursive-include data *

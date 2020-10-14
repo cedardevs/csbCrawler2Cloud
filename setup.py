@@ -165,26 +165,10 @@ setup(
     # need to place data files outside of your packages. See:
     # http://docs.python.org/distutils/setupscript.html#installing-additional-files
     #
-    data_files=[("data/input/gis", ["data/input/gis/EEZ.cpg",
-                                    "data/input/gis/EEZ.dbf",
-                                    "data/input/gis/EEZ.prj",
-                                    "data/input/gis/EEZ.sbn",
-                                    "data/input/gis/EEZ.sbx",
-                                    "data/input/gis/EEZ.shp",
-                                    "data/input/gis/EEZ.shx",
-                                    "data/input/gis/TERRITORIAL_SEAS.cpg",
-                                    "data/input/gis/TERRITORIAL_SEAS.dbf",
-                                    "data/input/gis/TERRITORIAL_SEAS.prj",
-                                    "data/input/gis/TERRITORIAL_SEAS.sbn",
-                                    "data/input/gis/TERRITORIAL_SEAS.sbx",
-                                    "data/input/gis/TERRITORIAL_SEAS.shp",
-                                    "data/input/gis/TERRITORIAL_SEAS.shx",
+    data_files=[("data/input/gis", ["data/input/gis/EEZ.*",
+                                    "data/input/gis/TERRITORIAL_SEAS.*",
                                     ]),
-                ("config", ["config/SAMPLE-config.yaml",
-                            "config/SAMPLE-credentials.yaml"]),
-                ("docs", ["docs/readme.htm"]),
-                ("docs/css", ["docs/css/awsod.css",
-                              "docs/css/bootstrap.min.css"])],  # Optional
+                ],  # Optional
     # To provide executable scripts, use entry points in preference to the
     # "scripts" keyword. Entry points provide cross-platform support and allow
     # `pip` to create the appropriate form of executable for the target
