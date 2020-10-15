@@ -24,7 +24,7 @@ def upload_to_aws(crawler, local_file, bucket, s3_file, overwrite):
     s3 = boto3.client('s3', aws_access_key_id=crawler.access_key,
                       aws_secret_access_key=crawler.secret_key)
     key_exists = False
-    osim_uuid = uuid.uuid5(uuid.NAMESPACE_DNS, 'data.noaa.gov')
+    osim_uuid = str(uuid.uuid5(uuid.NAMESPACE_DNS, 'data.noaa.gov'))
 
     if not overwrite:
         key_exists = objectkey_exists(s3, bucket, s3_file)
