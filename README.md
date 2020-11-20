@@ -57,7 +57,9 @@ export LANG='en_US.UTF-8'
    ACCESS_KEY: xxx
    SECRET_KEY: xxx
  ```
-   
+ - Also configure a ~/.aws/credentials file as described in the
+  [Boto3 quickstart](https://boto3.amazonaws.com/v1/documentation/api/latest/guide/quickstart.html) 
+
 ### File convention assumed  
 The data lands on NCEI disk as a tarball with 3 files:
  - YYYYMMDD_uuid_geojson.json
