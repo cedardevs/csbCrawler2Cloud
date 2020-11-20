@@ -35,7 +35,7 @@ setup(
     # For a discussion on single-sourcing the version across setup.py and the
     # project code, see
     # https://packaging.python.org/en/latest/single_source_version.html
-    version="1.0.0",  # Required
+    version="1.0.1",  # Required
     # This is a one-line description or tagline of what your project does. This
     # corresponds to the "Summary" metadata field:
     # https://packaging.python.org/specifications/core-metadata/#summary
@@ -165,8 +165,20 @@ setup(
     # need to place data files outside of your packages. See:
     # http://docs.python.org/distutils/setupscript.html#installing-additional-files
     #
-    data_files=[("data/input/gis", ["data/input/gis/EEZ.*",
-                                    "data/input/gis/TERRITORIAL_SEAS.*",
+    data_files=[("data/input/gis", ["data/input/gis/EEZ.cpg",
+                                    "data/input/gis/EEZ.dbf",
+                                    "data/input/gis/EEZ.prj",
+                                    "data/input/gis/EEZ.sbn",
+                                    "data/input/gis/EEZ.sbx",
+                                    "data/input/gis/EEZ.shp",
+                                    "data/input/gis/EEZ.shx",
+                                    "data/input/gis/TERRITORIAL_SEAS.cpg",
+                                    "data/input/gis/TERRITORIAL_SEAS.dbf",
+                                    "data/input/gis/TERRITORIAL_SEAS.prj",
+                                    "data/input/gis/TERRITORIAL_SEAS.sbn",
+                                    "data/input/gis/TERRITORIAL_SEAS.sbx",
+                                    "data/input/gis/TERRITORIAL_SEAS.shp",
+                                    "data/input/gis/TERRITORIAL_SEAS.shx",
                                     ]),
                 ],  # Optional
     # To provide executable scripts, use entry points in preference to the
