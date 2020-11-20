@@ -11,6 +11,9 @@ include launch_app.py
 include Pipfile
 include Pipfile.lock
 
+# Include source
+recursive-include app *.py
+
 # Include config, docs, client and server
 recursive-include config SAMPLE-*
 recursive-include docs *
