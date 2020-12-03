@@ -53,9 +53,13 @@ export LANG='en_US.UTF-8'
 
 ### Upload to AWS
  - Requires credentials.yaml
+ ```
    ACCESS_KEY: xxx
    SECRET_KEY: xxx
-   
+ ```
+ - Also configure a ~/.aws/credentials file as described in the
+  [Boto3 quickstart](https://boto3.amazonaws.com/v1/documentation/api/latest/guide/quickstart.html) 
+
 ### File convention assumed  
 The data lands on NCEI disk as a tarball with 3 files:
  - YYYYMMDD_uuid_geojson.json
@@ -119,6 +123,53 @@ variables:" box (adjust the path to your project location)
 Now if you right-click on the "CsbCrawlerTest.py" tab, you can select `Run 'Unittests in CsbCraw...'...`
 
 ## Dev Notes
+### Generating a Distribution
+Create a source distribution with:
+```bash
+python setup.py sdist
+```
+A `.tar.gz` file should appear in the `dist/` subdirectory.
+
+Create a built distribution with:
+``` bash
+python setup.py bdist_wheel
+```
+A `.whl` file should appear in the `dist/` subdirectory.
+Make use of this file with 
+```bash
+pipenv run pip install csbCrawler2Cloud-1.0.0-py3-none-any.whl
+```
+
+### Using the Distribution
+In production on-prem, conda was used to set up the agiletc user environment. Some system processes required that the
+general python remain at version 2. Anaconda/miniconda allow per user configurations.
+
+```
+## Dependencies for geopandas
+see: https://geopandas.org/install.html
+
+## Use conda-forge as the channel source 
+conda install --channel conda-forge rtree
+conda install --channel conda-forge libspatialindex
+or, specifying version 1.9.3:
+conda install --channel conda-forge libspatialindex=1.9.3
+
+anaconda installs packages in ~/anaconda3/pkgs
+```
+
+### Running on-prem
+You should be able to run on acc-engines (fortuna.ngdc.noaa.gov) in the agiletc account.
+
+```
+fortuna$ sudo /usr/local/bin/become_agiletc
+(base) [agiletc@fortuna ~]$ cd src/csbCrawler2Cloud-1.0.1
+(base) [agiletc@fortuna csbCrawler2Cloud-1.0.1]$ source setCsbcrawlerEnv.sh
+Use 'source setCsbcrawlerEnv.sh' to make the value persist
+CSBCRAWLER value:
+/home/agiletc/src/csbCrawler2Cloud-1.0.1
+(base) [agiletc@fortuna csbCrawler2Cloud-1.0.1]$ python launch_app.py
+```
+
 ### tar.gz Manifest
 Refering to this article for generating md5sum on a file:
 https://stackoverflow.com/questions/3431825/generating-an-md5-checksum-of-a-file
