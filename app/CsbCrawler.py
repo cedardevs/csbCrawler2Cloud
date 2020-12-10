@@ -31,6 +31,17 @@ class CsbCrawler:
 
     metadata = []
 
+    debugging = False
+
+    unique_id_prefixes = {
+        "FARSND": "Farsounder",
+        "JCUAU": "James Cook University",
+        "MACGR": "MacGregor",
+        "PGS": "PGS",
+        "ROSEP": "Rose Point",
+        "UNHJHC": "University of New Hampshire",
+    }
+
     @staticmethod
     def time_formatter(obs_time_str):
         try:
@@ -60,6 +71,46 @@ class CsbCrawler:
                 if type(item) in (list, dict):
                     results.append(self.find_values(search_key, item))
         return results
+
+    def keys_exist(self, in_dict, *keys):
+        '''
+        Check if *keys (nested) exists in 'in_dict' input dictionary
+        :param in_dict: input dictionary
+        :param keys: nested keys array
+        :return: True if all keys are present as a hierachy
+        '''
+        if not isinstance(in_dict, dict):
+            raise AttributeError('keys_exists() expects dict as first argument.')
+        if len(keys) == 0:
+            raise AttributeError('keys_exists() expects at least two arguments, one given.')
+
+        _element = in_dict
+        for key in keys:
+            try:
+                _element = _element[key]
+            except KeyError:
+                return False
+        return True
+
+    def get_shipname(self):
+        if (self.keys_exist(self.metadata, "platform", "name")):
+            shipname = self.metadata["platform"]["name"]
+        elif (self.keys_exist(self.metadata, "properties", "platform", "shipname")):
+            shipname = self.metadata["properties"]["platform"]["shipname"]
+        else:
+            shipname = "unknown"
+        return shipname
+
+    def get_org_name(self, unique_id):
+        if (self.keys_exist(self.metadata, "providerContactPoint", "orgName")):
+            org_name = self.metadata["providerContactPoint"]["orgName"]
+        else:
+            uid_prefix = unique_id.split("-", 1)[0]
+            try:
+                org_name = self.unique_id_prefixes[uid_prefix]
+            except KeyError:  # use uid_prefix as org_name as a last resort
+                org_name = uid_prefix
+        return org_name
 
     def add_uuid_to_csv(self, tar, tar_info):
         csv_file = tar.extractfile(tar_info)
@@ -93,10 +144,15 @@ class CsbCrawler:
         #          \______________________________/
         #           `- UUID identifies data file submitted
         file_uuid = file_name.split('_')[1] # Split on underscore and use element at index 1
+        if self.debugging: print("file_uuid='" + file_uuid + "'")
         # get unique_id, flattening the list if there are multiple results
         unique_ids = list(itertools.chain(*self.find_values('uniqueID', self.metadata)))
-        unique_id = unique_ids[0]
-        #print("uniqueID from metadata='" + unique_id + "'")
+        if self.debugging: print("unique_ids=" + str(unique_ids))
+        # unique_ids may contain lists of lists of strings or empty lists, [ [], ['b'] ], so flatten those too
+        merged_ids = list(itertools.chain.from_iterable(itertools.repeat(x, 1) if isinstance(x, str) else x for x in unique_ids))
+        if self.debugging: print("merged_ids=" + str(merged_ids))
+        unique_id = merged_ids[0]
+        if self.debugging: print("uniqueID from metadata='" + unique_id + "'")
 
         print("Adding " + unique_id + " to csv")
         new_file_name = self.output_dir + "csv/" + file_name[:-4] + ".csv"
@@ -117,9 +173,12 @@ class CsbCrawler:
             if len(tokens) == 4:
                 obs_time_str = tokens[3]
                 obs_time = self.time_formatter(obs_time_str)
+                shipname = self.get_shipname()
+                org_name = self.get_org_name(unique_id)
                 if (obs_time != None):
-                    new_line = f'{unique_id},{file_uuid},{tokens[1]},{tokens[0]},{tokens[2]},{obs_time},{self.metadata["platform"]["name"]},{self.metadata["providerContactPoint"]["orgName"]}'
-                    #print("Line {}: {}".format(cnt, new_line))
+                    new_line = f'{unique_id},{file_uuid},{tokens[1]},{tokens[0]},{tokens[2]},{obs_time},{shipname},{org_name}'
+                    if (self.debugging and cnt < 2):
+                        print("Line {}: {}".format(cnt, new_line))
                     new_csv_file.write(new_line + "\n")
 
             cnt += 1
@@ -144,7 +203,10 @@ class CsbCrawler:
         # Date is represented in filename YYYYMMDD
         file_name = os.path.basename(metadata_file.name)
         metadata = json.load(metadata_file)
-        print(metadata)
+        if self.debugging:
+            print("METADATA ----------\\")
+            print(metadata)
+            print("-------------------/")
         return metadata
 
     # Extract file
