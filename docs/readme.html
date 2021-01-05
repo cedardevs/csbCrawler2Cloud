@@ -13,7 +13,7 @@ NOAA CSB on AWS
   <div class="container">
     <div class="col-md-8 col-md-offset-2">
       
-<h1>Crowdsourced bathymetry on AWS</h1><div>
+<h1>Crowdsourced Bathymetry in the NOAA Big Data Program</h1><div>
 
 <p>The International Hydrographic Organization (IHO) defines Crowdsourced bathymetry (CSB) as  the collection of depth measurements from vessels, using standard navigation instruments, while engaged in routine maritime operations.</p>
 
@@ -23,7 +23,7 @@ NOAA CSB on AWS
 
 <h2 id="accessing-the-archive-data">Accessing the Archive Data</h2>
 
-<p>CSB data is hosted in the <code>odp-noaa-nesdis-ncei-csb</code> Amazon S3 bucket in the us-west-2 AWS region. The address for the public bucket is: <code>https://odp-noaa-nesdis-ncei-csb.s3.amazonaws.com/</code>.</p>
+<p>CSB data is hosted in the <code>noaa-bathymetry-pds</code> Amazon S3 bucket in the us-east-1 AWS region. The address for the public bucket is: <code>https://noaa-bathymetry-pds.s3.amazonaws.com/</code>.</p>
 
 <p>Each file is available as an object in Amazon S3. The basic data format is:</p>
 
@@ -38,16 +38,20 @@ NOAA CSB on AWS
 <li><code>&lt;filename&gt;</code> is the name of the file containing the data. These are comma separated value (csv) files.</li>
 </ul>
 
-<p>All files in the archive use the same csv format (.csv) where the first line is the header describing the columns of data<code>UUID,LON,LAT,DEPTH,TIME,PLATFORM_NAME,PROVIDER</code></p>
+<p>All files in the archive use the same csv format (.csv) where the first line is the header describing the columns of data
+<code>UNIQUE_ID,FILE_UUID,LON,LAT,DEPTH,TIME,PLATFORM_NAME,PROVIDER</code></p>
 
 <p>Where:</p>
 
 <ul>
-<li><code>UUID</code> = Unique ID of the platform/ship</li>
+<li><code>UNIQUE_ID</code> = Unique ID of the platform/ship</li>
+<li><code>FILE_UUID</code> = Unique ID of data file submitted</li>
 <li><code>LON</code> = Longitude</li>
 <li><code>LAT</code> = Latitude</li>
-<li><code>Depth</code> = Depth in meters</li>
-<li><code>Time</code> = Time formatted as ISO 8601</li>
+<li><code>DEPTH</code> = Depth in meters</li>
+<li><code>TIME</code> = Time formatted as ISO 8601</li>
+<li><code>PLATFORM_NAME</code> = Ship name</li>
+<li><code>PROVIDER</code> = Organization providing the data</li>
 </ul>
 
 <h3 id="accessing-the-archive-data-using-aws-cli">Accessing the Archive Data using AWS CLI</h3>
@@ -56,15 +60,15 @@ NOAA CSB on AWS
 
 <p>For example, to list all the data for June 6th, 2019 do:</p>
 
-<p><code>aws s3 ls s3://odp-noaa-nesdis-ncei-csb/csv/2019/06/26/ --no-sign-request</code></p>
+<p><code>aws s3 ls s3://noaa-bathymetry-pds/csv/2019/06/26/ --no-sign-request</code></p>
 
 <p>The <code>--no-sign-request</code> flag enables you to run the command without providing credentials. This works because the bucket is publicly accessible.</p>
 
 <p>To download all of the data for June 26th, 2019:</p>
 
-<p><code>aws s3 cp s3://odp-noaa-nesdis-ncei-csb/csv/2019/06/26/ . --recursive --no-sign-request</code></p>
+<p><code>aws s3 cp s3://noaa-bathymetry-pds/csv/2019/06/26/ . --recursive --no-sign-request</code></p>
 
-<p>Here the <code>--recursive</code> flag tells the CLI to grab all objects which begin with the keypath <code>s3://odp-noaa-nesdis-ncei-csb/csv/2019/06/26/</code>.</p>
+<p>Here the <code>--recursive</code> flag tells the CLI to grab all objects which begin with the keypath <code>s3://noaa-bathymetry-pds/csv/2019/06/26/</code>.</p>
 
 <h2 id="subscribing-to-csb-data-notifications">SNS</h2>
 
@@ -72,12 +76,12 @@ NOAA CSB on AWS
 
 <p>The Amazon Resource Name (ARN) for the SNS data is:</p>
 
-<p><code>arn:aws:sns:us-west-2:541768555562:odp-noaa-nesdis-ncei-csb</code></p>
+<p><code>arn:aws:sns:us-east-1:123901341784:noaa-bathymetry-pds</code></p>
 
 </div>
       <footer>
         <hr>
-        <a href="http://aws.amazon.com/opendata/public-datasets">AWS Public Datasets</a>
+        <a href="https://www.noaa.gov/organization/information-technology/big-data-program">NOAA Big Data Program</a>
       </footer>
     </div>
   </div>
