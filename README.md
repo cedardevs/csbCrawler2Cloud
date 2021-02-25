@@ -120,8 +120,12 @@ testSuite to run. For example, to execute CsbCrawlerTest.py,
 variables:" box (adjust the path to your project location)
 1. Click "OK" to close the dialog
 
-Now if you right-click on the "CsbCrawlerTest.py" tab, you can select `Run 'Unittests in CsbCraw...'...`
+Now if you right-click on the "CsbCrawlerTest.py" tab, you can select `Run 'Unittests in CsbCraw...'`
 
+To run unit tests from the command line:
+```commandline
+python -m unittest tests/CsbCrawlerTest.py
+```
 ## Dev Notes
 ### Generating a Distribution
 Create a source distribution with:
