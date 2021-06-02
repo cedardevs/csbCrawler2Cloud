@@ -147,7 +147,7 @@ setup(
         "s3transfer==0.3.3",
         "shapely==1.7.1",
         "six==1.15.0; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3'",
-        "urllib3==1.25.10; python_version != '3.4'",
+        "urllib3==1.26.5; python_version != '3.4'",
     ],  # Optional
     # List additional groups of dependencies here (e.g. development
     # dependencies). Users will be able to install these using the "extras"
