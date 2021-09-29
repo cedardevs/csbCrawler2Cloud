@@ -162,6 +162,7 @@ anaconda installs packages in ~/anaconda3/pkgs
 ```
 
 ### Running on-prem
+#### Acceptance
 You should be able to run on acc-engines (fortuna.ngdc.noaa.gov) in the agiletc account.
 
 ```
@@ -173,6 +174,13 @@ CSBCRAWLER value:
 /home/agiletc/src/csbCrawler2Cloud-1.0.1
 (base) [agiletc@fortuna csbCrawler2Cloud-1.0.1]$ python launch_app.py
 ```
+
+#### Production
+A production system was allocated as bdp01-co-prod.ngdc.noaa.gov ([ITSS-16665](https://daksha.nesdis-hq.noaa.gov/jira/browse/ITSS-16665))
+and a functional account of 'csb_bdp' was created.
+
+Notes for the deployment are in a Google doc, 
+[CsbCrawler2Cloud Operational Documentation](https://docs.google.com/document/d/1IowvkadwJ2bsF__Ms5lB3DMh_SYSkFEXLM1S4vV7ba0/edit?usp=sharing).
 
 ### tar.gz Manifest
 Refering to this article for generating md5sum on a file:
