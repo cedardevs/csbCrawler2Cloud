@@ -137,7 +137,7 @@ setup(
         "geopandas==0.8.1",
         "jmespath==0.10.0; python_version >= '2.6' and python_version not in '3.0, 3.1, 3.2, 3.3'",
         "munch==2.5.0",
-        "numpy==1.19.2; python_version >= '3.6'",
+        "numpy==1.22.0; python_version >= '3.6'",
         "pandas==1.1.3",
         "pyproj==2.6.1.post1; python_version >= '3.5'",
         "python-dateutil==2.8.1; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3'",
